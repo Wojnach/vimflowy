@@ -20,13 +20,17 @@ Disclaimer: for now normal mode blocks unsupported keystrokes without alt/ctrl/s
     - `0`: Move cursor to the first character of the line
     - `^`: Move cursor to the first character of the line
     - `$`: Move cursor to the last character on the line
+    - `gg`: Go to top of the page
+    - `g`: Go to root of the current list
+    - `G`: Go to bottom of the page
     - `I`: Insert at the beginning of the line
     - `A`: Insert after the end of the line
     - `u`: Undo
     - `<Ctrl>r`: Redo
-    - `<Alt>l`: Zoom into current list item
-    - `<Alt>h`: Zoom out of current list
+    - `<Ctrl>l`: Zoom into current list item
+    - `<Ctrl>h`: Zoom out of current list
     - `dd`: remove the current bullet
+    - `dw`: remove the current word
     - `Enter`: go to the beginning of next line
     - `<Alt>J`: Move the current line down
     - `<Alt>K`: Move the current line up
