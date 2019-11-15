@@ -114,6 +114,26 @@ const transparentActionMap =
 	    WF.hideDialog();
 	    goToNormalMode();
 	  },
+	  'ctrl-[': e => 
+	  {
+	    if(WF.focusedItem())
+	    {
+	        // console.log("transparent Escape (NORMAL)");
+	        const selection = WF.getSelection();
+	        if (selection !== undefined && selection.length != 0)
+	        {
+	          VisualSelectionBuffer = [];
+	          WF.setSelection([]);
+	        }
+
+	        e.preventDefault()
+	        e.stopPropagation()
+	    }
+
+	    WF.hideMessage();
+	    WF.hideDialog();
+	    goToNormalMode();
+	  },
 	  'g': e => 
 	  {
 	    const focusedItem = WF.focusedItem();
