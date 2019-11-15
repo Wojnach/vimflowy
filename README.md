@@ -87,6 +87,7 @@ Unsupported keystrokes which haven't been modified by ALT, CTRL, or META will be
     - `<ctrl>Space`: toggle expand/collapse on all items under currentItemRoot
 * all modes
     - `<Esc>`: Enter Normal mode
+        -'<Ctrl>[': also works as an alternative to Esc
     - `<Ctrl>k`,`<Ctrl>Dead`, `<Ctrl>;`, `<Ctrl>:`: Use Workflowys JumpToItemMenu
     - `<ctrl>Enter`: Toggle Completed on seletion
 
