@@ -486,12 +486,12 @@ const actionMap =
 	{
 	  // Escape: goToNormalMode,
 	  Esc: () => 
-	  }
+	  {
 	    console.log('MAC?') || goToNormalMode() // mac?
 	  },
 	  // 'ctrl-[': goToNormalMode,
 	  'ctrl-[': () => 
-	  }
+	  {
 	    console.log('MAC?') || goToNormalMode() // useful for Mac after capslock rebound to ctrl key
 	  }
 	}
