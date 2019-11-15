@@ -485,10 +485,14 @@ const actionMap =
 	[Mode.INSERT]: 
 	{
 	  // Escape: goToNormalMode,
-	  Esc: () => console.log('MAC?') || goToNormalMode() // mac?
-	},
-	{
+	  Esc: () => 
+	  }
+	    console.log('MAC?') || goToNormalMode() // mac?
+	  },
 	  // 'ctrl-[': goToNormalMode,
-	  'ctrl-[': () => console.log('MAC?') || goToNormalMode() // useful for Mac after capslock rebound to ctrl key
+	  'ctrl-[': () => 
+	  }
+	    console.log('MAC?') || goToNormalMode() // useful for Mac after capslock rebound to ctrl key
+	  }
 	}
 }
