@@ -8,7 +8,7 @@
   "content_scripts": 
   [
     {
-      "matches": ["https://workflowy.com/*"],
+      "matches": ["https://workflowy.com/*", "https://*.workflowy.com/*"],
       "run_at": "document_start",
       "js": 
       [
@@ -16,13 +16,13 @@
       ]
     }, 
     {
-      "matches": ["https://workflowy.com/*"],
+      "matches": ["https://workflowy.com/*", "https://*.workflowy.com/*"],
       "run_at": "document_end",
       "js": 
       [
         "contentscript_end.js"
       ]
-    } 
+    }
   ],
   "web_accessible_resources": [ 
     "state.js",
@@ -35,6 +35,7 @@
     "vimflowy.js"
   ],
   "permissions": [
-    "https://workflowy.com/*"
+    "https://workflowy.com/*",
+    "https://*.workflowy.com/*"
 	]
 }
