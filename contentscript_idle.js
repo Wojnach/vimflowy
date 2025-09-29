@@ -31,7 +31,7 @@ let scriptsLoaded = 0;
 for (var i=0; i < scripts.length; i++)
 {
     var s = document.createElement('script');
-    s.src = chrome.extension.getURL(scripts[i]);
+    s.src = chrome.runtime.getURL(scripts[i]);
     (document.head||document.documentElement).appendChild(s);
     s.onload = function() {
         scriptsLoaded += 1;

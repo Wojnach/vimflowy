@@ -2,43 +2,62 @@
   "name": "Vimflowy",
   "short_name": "Vimflowy",
   "description": "Vim shortcuts for Workflowy",
-  "version": "0.0.5.2",
-  "manifest_version": 2,
-  "icons": { "48": "icon48.png", "128": "icon128.png" },
-  "content_scripts":
-  [
+  "version": "0.0.6",
+  "manifest_version": 3,
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://workflowy.com/*",
+    "https://*.workflowy.com/*"
+  ],
+  "content_scripts": [
     {
-      "matches": ["https://workflowy.com/*", "https://*.workflowy.com/*"],
+      "matches": [
+        "https://workflowy.com/*",
+        "https://*.workflowy.com/*"
+      ],
       "run_at": "document_start",
-      "js":
-      [
+      "js": [
         "contentscript_start.js"
       ]
     },
     {
-      "matches": ["https://workflowy.com/*", "https://*.workflowy.com/*"],
+      "matches": [
+        "https://workflowy.com/*",
+        "https://*.workflowy.com/*"
+      ],
       "run_at": "document_idle",
-      "js":
-      [
+      "js": [
         "contentscript_idle.js"
       ]
     }
   ],
   "web_accessible_resources": [
-    "state.js",
-    "TimeTagCounter.js",
-    "easyMotion.js",
-    "cursorMovement.js",
-    "vimflowyFunctionLibrary.js",
-    "keybindings.js",
-    "transparentKeybindings.js",
-    "vimflowy.js",
-    "options.js"
+    {
+      "resources": [
+        "state.js",
+        "TimeTagCounter.js",
+        "easyMotion.js",
+        "cursorMovement.js",
+        "vimflowyFunctionLibrary.js",
+        "keybindings.js",
+        "transparentKeybindings.js",
+        "vimflowy.js",
+        "options.js"
+      ],
+      "matches": [
+        "https://workflowy.com/*",
+        "https://*.workflowy.com/*"
+      ]
+    }
   ],
-  "permissions": [
-    "https://workflowy.com/*",
-    "https://*.workflowy.com/*",
-    "storage"
-	],
-  "options_page": "options.html"
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
 }

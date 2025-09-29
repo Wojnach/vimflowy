@@ -2689,9 +2689,8 @@ function GetMinNumAncestors(arr)
 
 function fixFocus() 
 {
-    const active = document.activeElement.className;
-
-    // console.log("attempting to fix focus");
+    fixFocus_2();
+/*     const active = document.activeElement.className;
 
     if (active.includes("searchBoxInput")) 
         return;
@@ -2699,10 +2698,38 @@ function fixFocus()
     if (active.includes("content")) 
         return;
 
-    // console.log("focus fixed");
-
     const matches = document.querySelectorAll(".name.matches .content, .notes.matches .content");
-    matches.length > 0 ? matches[0].focus() : document.getElementsByClassName("content")[0].focus();
+    matches.length > 0 ? matches[0].focus() : document.getElementsByClassName("content")[0].focus(); */
+}
+
+function fixFocus_2()
+{
+  const active = document.activeElement;
+  const cls = typeof active?.className === "string"
+      ? active.className
+      : (active?.className && active.className.baseVal) || ""; // SVGAnimatedString fallback
+
+  // early-out because focus is where we want it to be.
+  if (cls.includes("searchBoxInput") || cls.includes("content")) 
+    return;
+
+  // Prefer current search hit/contenteditable areas, then any .content
+  const candidate =
+    document.querySelector(".name.matches .content") ||
+    document.querySelector(".notes.matches .content") ||
+    document.querySelector('[contenteditable="true"]') ||
+    document.querySelector(".content");
+
+  if (candidate && typeof candidate.focus === "function") 
+  {
+    // Prevent scroll jumps if WF is mid-layout
+    candidate.focus({ preventScroll: true });
+  } 
+  else 
+  {
+    // Nothing to focus yet: try again shortly (DOM may still be mounting)
+    setTimeout(fixFocus, 50);
+  }
 }
 
 function preventKeystrokesWhileNavigating(event)

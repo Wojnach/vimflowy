@@ -1,9 +1,61 @@
 
 const {flashMode, goToInsertMode, goToNormalMode, goToVisualMode, goToReplaceMode, goToFindMode, goToInnerMode, goToAfterMode} = modeClosure(state.get, state.set);
 
+// vimflowy.js (self-bootstrapping, with retry)
+(() => {
+  let bootstrapped = false;
+  let tries = 0;
+  const MAX_TRIES = 100;      // ~10s if interval is 100ms
+  const RETRY_MS  = 100;
+
+  function init() 
+  {
+    if (bootstrapped) 
+      return;
+
+    const mainContainer = document.getElementById('app');
+    if (!mainContainer) 
+    {
+      if (tries < MAX_TRIES) 
+      {
+        tries += 1;
+        setTimeout(init, RETRY_MS);
+      } 
+      else 
+      {
+        console.warn('#app not found after retries; giving up.');
+      }
+      return; 
+    }
+
+    // we have the #app, lets wire the rest.
+    requestAnimationFrame(fixFocus);
+    //requestAnimationFrame(() => setTimeout(fixFocus, 0));
+
+    mainContainer.addEventListener('mousedown', mouseClickIntoInsertMode);
+    mainContainer.addEventListener('keyup', HandleKeyup);
+    mainContainer.addEventListener('keydown', HandleKeydown);
+
+    bootstrapped = true; 
+  }
+
+  if (document.readyState === 'loading') 
+  {
+    document.addEventListener('DOMContentLoaded', () => init(), { once: true });
+  } 
+  else 
+  {
+    init();
+  }
+
+  // Back-compat: if anything still calls WFEventListener("documentReady") that I'm not aware of
+  window.WFEventListener = (event) => { if (event === 'documentReady') init(); };
+})();
+
 WFEventListener = event => 
 {
-  // console.log(event);
+  //console.log(event);
+  //console.log("-- WE GOT SOMETHING -- ")
   if(event === "documentReady")
   {
     requestAnimationFrame(fixFocus);
@@ -26,7 +78,6 @@ WFEventListener = event =>
     })
 
   }
-
 };
 
 function HandleKeyup(event)
@@ -50,7 +101,7 @@ function HandleKeyup(event)
 
 function HandleKeydown(event)
 {
-    // console.log("-- KeyDOWN event -- ")
+    //console.log("-- KeyDOWN event -- ")
     if(HandleEasyMotion_KeyDown(event))
     {
       // console.log("-- HandleEasyMotion early out -- ")
