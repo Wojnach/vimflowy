@@ -473,6 +473,22 @@ const transparentActionMap =
 		// Let the browser handle ctrl-v for system clipboard paste
 		// Don't prevent default - allow native paste behavior
 	  },
+	  'meta-c': e =>
+	  {
+		// Mac: Cmd+C for copy
+		if(WF.focusedItem())
+		{
+			WF.setSelection([WF.focusedItem()]);
+			CopySelectionToClipboard();
+			e.preventDefault()
+			e.stopPropagation()
+		}
+	  },
+	  'meta-v': e =>
+	  {
+		// Mac: Let the browser handle meta-v for system clipboard paste
+		// Don't prevent default - allow native paste behavior
+	  },
 	  'dm': e => 
 	  {
 		detachMirrorOnSelectedItems();
@@ -531,7 +547,23 @@ const transparentActionMap =
 		RotateSelectionPreMoveBuffer();
 		goToNormalMode();
 	  },
-	  'ctrl-b': e => 
+	  'ctrl-b': e =>
+	  {
+		RotateSelectionPreMoveBuffer();
+		goToNormalMode();
+	  },
+	  // Mac equivalents for formatting
+	  'meta-u': e =>
+	  {
+		RotateSelectionPreMoveBuffer();
+		goToNormalMode();
+	  },
+	  'meta-i': e =>
+	  {
+		RotateSelectionPreMoveBuffer();
+		goToNormalMode();
+	  },
+	  'meta-b': e =>
 	  {
 		RotateSelectionPreMoveBuffer();
 		goToNormalMode();
@@ -548,8 +580,13 @@ const transparentActionMap =
 		  RotateSelectionPreMoveBuffer();
 		  ExitVisualMode();
 	  },
-	  'ctrl- ': e => 
+	  'ctrl- ': e =>
 	  {
+	    toggleExpandAll(e);
+	  },
+	  'meta- ': e =>
+	  {
+	    // Mac: Cmd+Space for toggle expand
 	    toggleExpandAll(e);
 	  },
 	  'alt-˘': e => 

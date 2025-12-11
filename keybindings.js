@@ -199,18 +199,36 @@ const actionMap =
 	  {
 		zoomOutFocused();
 	  },
-	  'ctrl-l': t => 
+	  'ctrl-l': t =>
 	  {
 		// WF.zoomIn(WF.focusedItem());
 		zoomInInstantly();
 	  },
-	  'ctrl-h': t => 
+	  'meta-l': t =>
+	  {
+		// Mac: Cmd+L for zoom in
+		zoomInInstantly();
+	  },
+	  'ctrl-h': t =>
 	  {
 		// WF.zoomOut(WF.currentItem());
 		zoomOutInstantly();
 	  },
-	  'ctrl-j': t => 
+	  'meta-h': t =>
 	  {
+		// Mac: Cmd+H for zoom out
+		zoomOutInstantly();
+	  },
+	  'ctrl-j': t =>
+	  {
+		  if(!WF.focusedItem())
+		  	return;
+
+		  InitEasyMotionMap();
+	  },
+	  'meta-j': t =>
+	  {
+		  // Mac: Cmd+J for easy motion
 		  if(!WF.focusedItem())
 		  	return;
 
@@ -319,8 +337,13 @@ const actionMap =
 
 		setCursorAt(state.get().anchorOffset);
 	  },
-	  'ctrl-r': t => 
+	  'ctrl-r': t =>
 	  {
+	    WF.redo();
+	  },
+	  'meta-r': t =>
+	  {
+	    // Mac: Cmd+R for redo
 	    WF.redo();
 	  },
 	  "ctrl-'": t =>
@@ -621,11 +644,16 @@ const actionMap =
 	    WF.undo(); 
 	    ExitVisualMode();
 	  },
-	  'ctrl-r': t => 
+	  'ctrl-r': t =>
 	  {
 	    WF.redo();
 	  },
-	  ' ': t => 
+	  'meta-r': t =>
+	  {
+	    // Mac: Cmd+R for redo
+	    WF.redo();
+	  },
+	  ' ': t =>
 	  {
 	    toggleExpand(t);
 	  },
