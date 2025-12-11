@@ -5,9 +5,69 @@
 
 const transparentActionMap = 
 {
-	[Mode.NORMAL]: 
+	[Mode.NORMAL]:
 	{
-	  'ctrl-k': e => 
+	  'alt-O': e =>
+	  {
+		// Open Jump To menu (Shift+Alt+O)
+		const focusedItem = WF.focusedItem();
+		if (!focusedItem) return;
+
+		// Set flag to indicate we're in Jump To menu mode
+		window._vimflowyJumpToActive = true;
+
+		// Prepare for jump (goes to insert mode, saves focus for restoration)
+		HandleJumpTo();
+
+		// Dispatch Ctrl+K to open the Jump To menu
+		setTimeout(() => {
+			const ctrlKEvent = new KeyboardEvent('keydown', {
+				key: 'k',
+				code: 'KeyK',
+				keyCode: 75,
+				which: 75,
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			});
+			document.activeElement.dispatchEvent(ctrlKEvent);
+
+			// Listen for location change to return to normal mode and fix focus
+			const locationService = window.ioc.maybe('location');
+			if (locationService) {
+				const unsubscribe = locationService.onChange && locationService.onChange(() => {
+					window._vimflowyJumpToActive = false;
+
+					setTimeout(() => {
+						const currentItem = WF.currentItem();
+						if (currentItem && !WF.focusedItem()) {
+							WF.editItemName(currentItem);
+						}
+						goToNormalMode();
+					}, 50);
+					if (unsubscribe) unsubscribe();
+				});
+			}
+		}, 10);
+
+		e.preventDefault();
+		e.stopPropagation();
+	  },
+	  'alt-ctrl-m': e =>
+	  {
+		// Handle Workflowy's native Move To menu (Ctrl+Alt+M)
+		const focusedItem = WF.focusedItem();
+		if (!focusedItem) return;
+
+		// Set flag to indicate we're in Move To menu mode
+		window._vimflowyMoveToActive = true;
+
+		// Go to insert mode to allow typing in the menu
+		goToInsertMode();
+
+		// Let the event propagate to Workflowy to open the menu
+	  },
+	  'ctrl-k': e =>
 	  {
 		HandleJumpTo();
 	  },
@@ -562,28 +622,85 @@ const transparentActionMap =
 		HandleEscapeVisualMode(e);
 	  }
 	},
-	[Mode.INSERT]: 
+	[Mode.INSERT]:
 	{
-	  'ctrl-[': e => 
+	  'ctrl-[': e =>
 	  {
+		// If Move To menu is active, let Workflowy handle escape to close the popup
+		if (window._vimflowyMoveToActive) {
+		  window._vimflowyMoveToActive = false;
+		  // Let it propagate to close the menu, then return to normal mode
+		  setTimeout(() => goToNormalMode(), 50);
+		  return;
+		}
+		// Clear menu flags on escape
+		window._vimflowyJumpToActive = false;
 		SimulateEscapeInsertMode(e);
 	  },
 	  Esc: e =>
 	  {
-		// console.log("Pressing ESC from insert mode");
+		// If Move To menu is active, let Workflowy handle escape to close the popup
+		if (window._vimflowyMoveToActive) {
+		  window._vimflowyMoveToActive = false;
+		  // Let it propagate to close the menu, then return to normal mode
+		  setTimeout(() => goToNormalMode(), 50);
+		  return;
+		}
+		// Clear menu flags on escape
+		window._vimflowyJumpToActive = false;
 		HandleEscapeInsertMode(e);
 	  },
 	  Escape: e =>
 	  {
-		// console.log("Pressing Escape from insert mode");
+		// If Move To menu is active, let Workflowy handle escape to close the popup
+		if (window._vimflowyMoveToActive) {
+		  window._vimflowyMoveToActive = false;
+		  // Let it propagate to close the menu, then return to normal mode
+		  setTimeout(() => goToNormalMode(), 50);
+		  return;
+		}
+		// Clear menu flags on escape
+		window._vimflowyJumpToActive = false;
 		HandleEscapeInsertMode(e);
 	  },
-	  'Enter': e => 
+	  'Enter': e =>
 	  {
-	    // we are using the JumpToMenu to jump to the 
+	    // Handle Enter from Jump To menu (triggered via Shift+Alt+O)
+	    if (window._vimflowyJumpToActive) {
+	      e.preventDefault();
+	      e.stopPropagation();
+	      window._vimflowyJumpToActive = false;
+
+	      // Handle jump to same location (locationChanged won't fire)
+	      setTimeout(() => {
+	        const currentItem = WF.currentItem();
+	        if (currentItem) {
+	          WF.editItemName(currentItem);
+	        }
+	        goToNormalMode();
+	      }, 50);
+	      return;
+	    }
+
+	    // Handle Enter from Move To menu (Ctrl+Alt+M)
+	    if (window._vimflowyMoveToActive) {
+	      window._vimflowyMoveToActive = false;
+
+	      // Return to normal mode after move completes
+	      setTimeout(() => {
+	        const currentItem = WF.currentItem();
+	        if (currentItem && !WF.focusedItem()) {
+	          WF.editItemName(currentItem);
+	        }
+	        goToNormalMode();
+	      }, 100);
+	      return;
+	    }
+
+	    // we are using the JumpToMenu to jump to the
 	    // item which we are already standing on.
 	    // this means that "locationChanged" won't fire...
-	    // so we'll handle it here for now.. 
+	    // so we'll handle it here for now..
 	    if(!WF.focusedItem() && WF.currentItem())
 	    {
 	      if(focusPreJumpToItemMenu)

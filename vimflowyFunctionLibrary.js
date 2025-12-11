@@ -303,6 +303,8 @@ function deleteUntilLineEnd()
     // console.log("substring_Start: " + substring_Start);
     // console.log("substring_End: " + substring_End);
 
+    // Count unclosed tags in substring_Start and closing tags needed from substring_End
+    // For simple tags (b, i, u)
     var htmlTags = substring_End.match(/(<\/b>)|(<\/u>)|(<\/i>)|(<i>)|(<u>)|(<b>)/g);
     if(htmlTags !== null)
     {
@@ -325,6 +327,17 @@ function deleteUntilLineEnd()
         // console.log("finalString post replace i: " + finalString);
         finalString = finalString.replace(/(<b><\/b>)/g, "");
         // console.log("finalString post replace b: " + finalString);
+    }
+
+    // Handle span tags (used for colored text like #tags)
+    // Count unclosed <span...> tags in the start portion
+    const spanOpenTags = (finalString.match(/<span[^>]*>/g) || []).length;
+    const spanCloseTags = (finalString.match(/<\/span>/g) || []).length;
+    const unclosedSpans = spanOpenTags - spanCloseTags;
+
+    // Add closing </span> tags for any unclosed spans
+    if (unclosedSpans > 0) {
+        finalString = finalString + '</span>'.repeat(unclosedSpans);
     }
 
     // console.log("finalString: " + finalString);

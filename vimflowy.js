@@ -74,6 +74,44 @@ function HandleKeyup(event)
 function HandleKeydown(event)
 {
     //console.log("-- KeyDOWN event -- ")
+
+    // Skip vimflowy handling when a Workflowy popup/menu is active (e.g., Move To menu)
+    // Use Workflowy's popups service to detect active popups
+    const popupsService = window.ioc && window.ioc.maybe && window.ioc.maybe('popups');
+    const hasActivePopup = popupsService && popupsService.current;
+
+    if (hasActivePopup || window._vimflowyMoveToActive || window._vimflowyJumpToActive) {
+      // Allow Escape and Enter to close the menu and return to normal mode
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        setTimeout(() => {
+          window._vimflowyMoveToActive = false;
+          window._vimflowyJumpToActive = false;
+          // Restore focus to current item before returning to normal mode
+          const currentItem = WF.currentItem();
+          if (currentItem && !WF.focusedItem()) {
+            WF.editItemName(currentItem);
+          }
+          goToNormalMode();
+        }, 50);
+        return; // Let Escape propagate to close the popup
+      } else if (event.key === 'Enter') {
+        setTimeout(() => {
+          window._vimflowyMoveToActive = false;
+          window._vimflowyJumpToActive = false;
+          // Restore focus to current item before returning to normal mode
+          const currentItem = WF.currentItem();
+          if (currentItem && !WF.focusedItem()) {
+            WF.editItemName(currentItem);
+          }
+          goToNormalMode();
+        }, 100);
+        return; // Let Enter propagate to confirm the action
+      } else {
+        // Let all other keys pass through to the popup
+        return;
+      }
+    }
+
     if(HandleEasyMotion_KeyDown(event))
     {
       // console.log("-- HandleEasyMotion early out -- ")
