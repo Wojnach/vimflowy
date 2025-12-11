@@ -999,8 +999,9 @@ function toggleExpand(t)
         return;
 
     // expansion/collapse isn't supported by WF when searching
-    if(WF.currentSearchQuery() !== null)
-        return;
+    // Re-enabled to test if still buggy:
+    // if(WF.currentSearchQuery() !== null)
+    //     return;
 
     const currentItem = WF.currentItem();
 
@@ -1040,8 +1041,9 @@ function toggleExpandAll(e)
     }
 
     // expansion/collapse isn't supported by WF when searching
-    if(WF.currentSearchQuery() !== null)
-        return;
+    // Re-enabled to test if still buggy:
+    // if(WF.currentSearchQuery() !== null)
+    //     return;
 
     const focusedItemParent = focusedItem.getParent();
     if(!focusedItemParent)
