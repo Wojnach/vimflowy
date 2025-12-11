@@ -221,7 +221,7 @@ const transparentActionMap =
 		const itemRoot = focusedItem.equals(currentItem) ? WF.currentItem() : focusedItem.getParent();
 		goToListBottom(e, itemRoot);
 	  },
-	  'GG': e => 
+	  'GG': e =>
 	  {
 		goToListBottom(e, WF.currentItem());
 	  },
@@ -241,32 +241,32 @@ const transparentActionMap =
 		e.preventDefault();
 		e.stopPropagation();
 	  },
-	  'gg': e =>
-	  {
-	    const currentOffset = state.get().anchorOffset
-	    const bIsCurrentItemHomeRoot = WF.rootItem().equals(WF.currentItem());
-	    if(bIsCurrentItemHomeRoot)
-	    {
-	      const visibleChildren = WF.currentItem().getVisibleChildren();
-	      if (visibleChildren !== undefined && visibleChildren.length !== 0)
-	      {
-	        WF.editItemName(visibleChildren[0]);
-	      }
-	      else
-	      {
-	        WF.editItemName(WF.currentItem());
-	      }
-	    }
-	    else
-	    {
-	      WF.editItemName(WF.currentItem());
-	    }
-
-	    event.preventDefault();
-	    event.stopPropagation();
-
-	    setCursorAt(currentOffset);
-	  },
+	  // 'gg': e =>
+	  // {
+	  //   const currentOffset = state.get().anchorOffset
+	  //   const bIsCurrentItemHomeRoot = WF.rootItem().equals(WF.currentItem());
+	  //   if(bIsCurrentItemHomeRoot)
+	  //   {
+	  //     const visibleChildren = WF.currentItem().getVisibleChildren();
+	  //     if (visibleChildren !== undefined && visibleChildren.length !== 0)
+	  //     {
+	  //       WF.editItemName(visibleChildren[0]);
+	  //     }
+	  //     else
+	  //     {
+	  //       WF.editItemName(WF.currentItem());
+	  //     }
+	  //   }
+	  //   else
+	  //   {
+	  //     WF.editItemName(WF.currentItem());
+	  //   }
+	  //
+	  //   event.preventDefault();
+	  //   event.stopPropagation();
+	  //
+	  //   setCursorAt(currentOffset);
+	  // },
 	  'ci': e => 
 	  {
 		e.preventDefault()

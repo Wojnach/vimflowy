@@ -130,9 +130,12 @@ const setCursorAfterVerticalMove = (calculateOffset, cursorTargetProject) =>
   moveAboveFold(cursorTarget)
 }
 
-const moveCursorDown = startElement => 
+const moveCursorDown = startElement =>
 {
+  if (!startElement) return null;
+
   const project = projectAncestor(startElement)
+  if (!project) return null;
 
   if (project.className.includes('selected')) 
     return project.querySelector('.project')
@@ -201,9 +204,13 @@ const moveCursorDown = startElement =>
   return cursorTargetProject.nextElementSibling
 }
 
-const moveCursorUp = t => 
+const moveCursorUp = t =>
 {
-  const project = projectAncestor(t) 
+  if (!t) return null;
+
+  const project = projectAncestor(t)
+  if (!project) return null;
+
   let cursorTarget = null
 
   if (project.previousElementSibling)

@@ -1189,9 +1189,13 @@ function MoveItemUp(t)
         if(prevItem === null)
             return;
 
+        // Move the prevItem down instead of moving focusedItem up
+        // This keeps focus more reliably on empty bullets with images
         const parentItem = prevItem.getParent();
+        WF.moveItems([prevItem], parentItem, focusedItem.getPriority() + 1);
 
-        WF.moveItems([focusedItem], parentItem, prevItem.getPriority());
+        // Re-establish focus on the item we're moving
+        WF.editItemName(focusedItem);
         setCursorAt(state.get().anchorOffset);
 }
 
@@ -1321,6 +1325,9 @@ function MoveSelectionDown(t)
     else
     {
         const focusedItem = WF.focusedItem();
+        if (!focusedItem)
+            return;
+
         const nextItem = focusedItem.getNextVisibleSibling();
         if(nextItem)
         {
@@ -1369,11 +1376,19 @@ function MoveSelectionUp(t)
     else
     {
         const focusedItem = WF.focusedItem();
+        if (!focusedItem)
+            return;
+
         const prevItem = focusedItem.getPreviousVisibleSibling();
         if(prevItem)
         {
-            const parentItem = focusedItem.getParent();
-            WF.moveItems([focusedItem], parentItem, prevItem.getPriority());
+            // Mirror MoveSelectionDown logic: move the prevItem down instead of moving focusedItem up
+            // This keeps focus more reliably on empty bullets with images
+            const parentItem = prevItem.getParent();
+            WF.moveItems([prevItem], parentItem, focusedItem.getPriority() + 1);
+
+            // Re-establish focus on the item we're moving
+            WF.editItemName(focusedItem);
         }
     }
 
