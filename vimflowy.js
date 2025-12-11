@@ -201,6 +201,10 @@ let keyBufferTempCopy = [];
 let keyBuffer = [];
 let yankItemBuffer_Copies = [];     // contains data for items (item.data)
 let yankItemBuffer_Duplicates = []; // contains actual items
+let searchHistory = [];             // history of search queries
+let searchHistoryIndex = -1;        // current position in search history (-1 = not browsing)
+let lastSearchQuery = null;         // last search query for restoration after zoom
+const MAX_SEARCH_HISTORY = 50;      // max number of searches to remember
 const validSearchKeys = '1234567890[{]};:\'",<.>/?\\+=_-)(*&^%$#@~`!abcdefghijklmnopqrstuvwxyzäåöABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ ';
 const validInputKeys =  '1234567890[{]};:\'",<.>/?\\+=_-)(*&^%$#@~`!abcdefghijklmnopqrstuvwxyzåäöABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ';
 const key_Slash = "/"//55;

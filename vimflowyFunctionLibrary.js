@@ -2763,12 +2763,20 @@ function updateKeyBuffer_Keydown(event)
             if(keyBuffer.length > 1)
             {
                 keyBuffer.pop();
+                searchHistoryIndex = -1; // Reset history navigation when typing
             }
+        }
+        else if(key === 'ArrowUp' || key === 'ArrowDown')
+        {
+            // Don't add arrow keys to buffer - they're handled in keyup for history navigation
+            // Return true to prevent Workflowy from handling arrow keys during search
+            return true;
         }
         else if(!keyBuffer.includes('Enter'))
         // else
         {
             keyBuffer = [...keyBuffer, key];
+            searchHistoryIndex = -1; // Reset history navigation when typing
 
             const filteredKeys = keyBuffer.filter(function(value, index, arr)
             {
@@ -2780,7 +2788,7 @@ function updateKeyBuffer_Keydown(event)
                     filteredKeys.splice(slashIndex, 1);
             }
 
-            const keyBufferStr = filteredKeys.join(""); 
+            const keyBufferStr = filteredKeys.join("");
 
             WF.hideMessage();
             WF.showMessage(keyBufferStr.bold(), false);
@@ -2793,6 +2801,7 @@ function updateKeyBuffer_Keydown(event)
             // focus on top item otherwise search fails
             WF.editItemName(WF.currentItem());
             keyBuffer = [key];
+            searchHistoryIndex = -1; // Reset history navigation for new search
         }
     }
     else
@@ -2826,6 +2835,40 @@ function updateKeyBuffer_Keyup(event)
             WF.search("");
             WF.clearSearch();
             WF.editItemName(WF.currentItem());
+            searchHistoryIndex = -1; // Reset history navigation
+        }
+        else if(key === 'ArrowUp' && searchHistory.length > 0)
+        {
+            // Navigate to older search in history
+            if (searchHistoryIndex < searchHistory.length - 1) {
+                searchHistoryIndex++;
+                const historyQuery = searchHistory[searchHistoryIndex];
+                // Update keyBuffer to reflect the history item
+                keyBuffer = ['/', ...historyQuery.split('')];
+                WF.hideMessage();
+                WF.showMessage(historyQuery.bold(), false);
+                WF.search(historyQuery);
+            }
+        }
+        else if(key === 'ArrowDown' && searchHistory.length > 0)
+        {
+            // Navigate to newer search in history
+            if (searchHistoryIndex > 0) {
+                searchHistoryIndex--;
+                const historyQuery = searchHistory[searchHistoryIndex];
+                // Update keyBuffer to reflect the history item
+                keyBuffer = ['/', ...historyQuery.split('')];
+                WF.hideMessage();
+                WF.showMessage(historyQuery.bold(), false);
+                WF.search(historyQuery);
+            } else if (searchHistoryIndex === 0) {
+                // Return to empty search
+                searchHistoryIndex = -1;
+                keyBuffer = ['/'];
+                WF.hideMessage();
+                WF.showMessage("".bold(), false);
+                WF.search("");
+            }
         }
         else if(key === 'Enter' || keyBuffer.includes('Enter'))
         // else if(searchQuery !== null && key === 'Enter' || keyBuffer.includes('Enter') )
@@ -2838,6 +2881,10 @@ function updateKeyBuffer_Keyup(event)
 
             if(searchQuery !== null)
             {
+                // Save search to history
+                lastSearchQuery = searchQuery;
+                addToSearchHistory(searchQuery);
+
                 WF.editItemName(WF.currentItem());
                 keyBuffer = [];
                 WF.hideMessage();
@@ -2906,7 +2953,8 @@ function updateKeyBuffer_Keyup(event)
 
         }
     }
-    else if(searchQuery !== null && key === 'Escape')
+    // ESC clears search only in NORMAL mode (not INSERT mode, to allow vim-style mode switching)
+    else if(searchQuery !== null && key === 'Escape' && state.get().mode === Mode.NORMAL)
     {
             WF.search("");
             WF.clearSearch();
@@ -2967,6 +3015,29 @@ function sortCompletedItemsOnFocusParent(t)
     setCursorAt(state.get().anchorOffset);
 }
 
+// Search history helper functions
+function addToSearchHistory(query) {
+    if (!query || query.trim() === '') return;
+
+    // Remove duplicate if exists
+    const existingIndex = searchHistory.indexOf(query);
+    if (existingIndex !== -1) {
+        searchHistory.splice(existingIndex, 1);
+    }
+
+    // Add to front of history
+    searchHistory.unshift(query);
+
+    // Trim to max size
+    if (searchHistory.length > MAX_SEARCH_HISTORY) {
+        searchHistory.pop();
+    }
+
+    // Reset history browsing index
+    searchHistoryIndex = -1;
+}
+
+
 function zoomOutFocused()
 {
     const focusedItem = WF.focusedItem();
@@ -2982,19 +3053,19 @@ function zoomOutFocused()
         // Zoom out instantly by targeting current item parent
         WF.zoomTo(currentItemParent);
 
-        // refocus on currentItem because ZoomTo stole it. 
+        // refocus on currentItem because ZoomTo stole it.
         WF.editItemName(currentItem);
     }
     else
     {
-        // worse case; fallback to animated zoomOut 
+        // worse case; fallback to animated zoomOut
         WF.zoomOut(currentItem);
     }
 
     // refocus on the item we focused in the beginning.
     WF.editItemName(focusedItem);
 
-    // we might lose focus during the above operations due to various reasons. 
+    // we might lose focus during the above operations due to various reasons.
     if(!WF.focusedItem())
     {
         requestAnimationFrame(fixFocus);
@@ -3051,7 +3122,6 @@ function zoomOutInstantly()
     {
         WF.zoomOut(WF.currentItem());
     }
-
 }
 
 function zoomInInstantly()
