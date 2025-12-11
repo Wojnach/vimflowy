@@ -37,20 +37,20 @@ const debug = (...args) => state.get().debug && console.log(...args)
 const modeClosure = (getState, setState) => {
   const indicatorElement = document.createElement('div')
   indicatorElement.setAttribute('style', 'position: fixed; z-index:9001; bottom:0; left: 0; background-color: grey; color: white; padding: .3em; font-family: sans-serif;')
-  indicatorElement.innerHTML = 'NORMAL'
+  indicatorElement.textContent = 'NORMAL'
   document.querySelector('body').append(indicatorElement)
 
   let timerId = null
   const setMode = modeText => {
     clearTimeout(timerId)
-    indicatorElement.innerHTML = modeText
+    indicatorElement.textContent = modeText
   }
 
   return {
-    flashMode: (temporaryMode, duration = 1000) => 
+    flashMode: (temporaryMode, duration = 1000) =>
     {
       setMode(temporaryMode)
-      timerId = setTimeout(() => { indicatorElement.innerHTML = getState().mode }, duration)
+      timerId = setTimeout(() => { indicatorElement.textContent = getState().mode }, duration)
     },
     goToInsertMode: (cursorRight = false) => 
     {

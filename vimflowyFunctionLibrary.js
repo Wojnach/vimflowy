@@ -22,7 +22,7 @@ function ColorSelectedItems(inColor)
     if(!focusedItem)
         return;
 
-    var currentSelection = VisualSelectionBuffer.length != 0 
+    var currentSelection = VisualSelectionBuffer.length !== 0 
     ? VisualSelectionBuffer 
     : WF.getSelection();
 
@@ -41,7 +41,7 @@ function ColorSelectedItems(inColor)
 
 function RemoveTextFromItems(inItems)
 {
-    if (inItems !== undefined && inItems.length != 0)
+    if (inItems !== undefined && inItems.length !== 0)
     {
         for (var i = 0, len = inItems.length; i < len; i++)
         {
@@ -53,7 +53,7 @@ function RemoveTextFromItems(inItems)
                 continue;
 
             var kids = itemIter.getChildren();
-            if (kids !== undefined && kids.length != 0) 
+            if (kids !== undefined && kids.length !== 0) 
                 RemoveTextFromItems(kids);
 
             RemoveTextColorFromItem(itemIter);
@@ -76,7 +76,7 @@ function ColorItems(inItems, inColor)
             continue;
 
         var kids = itemIter.getChildren();
-        if (kids !== undefined && kids.length != 0) 
+        if (kids !== undefined && kids.length !== 0) 
             ColorItems(kids, inColor);
 
         ColorItem(itemIter, inColor);
@@ -163,7 +163,7 @@ function ColorItemName(inItem, inColor)
 {
     let itemName = inItem.getName();
 
-    if(itemName.length == 0)
+    if(itemName.length === 0)
         return;
 
     const isColored = itemName.includes('colored c-'+inColor);
@@ -183,7 +183,7 @@ function ColorItemNote(inItem, inColor)
 {
     let itemNote = inItem.getNote();
 
-    if(itemNote.length == 0)
+    if(itemNote.length === 0)
         return;
 
     const isColored = itemNote.includes('colored c-'+inColor);
@@ -230,7 +230,7 @@ function calculateCursorOffset(bHtmlTagsIncluded = false)
     // if(htmlTags !== undefined)
 
     // Oh no, it has html tags, recalculate cursor offset
-    if(itemNameText.length != itemName.length)
+    if(itemNameText.length !== itemName.length)
     {
         // console.log("getName: " + itemName);
         // console.log("getPlainName: " + itemNameText);
@@ -253,17 +253,17 @@ function calculateCursorOffset(bHtmlTagsIncluded = false)
         {
             const char_1 = itemNameCleaned.charAt(i-addedOffset);
             const char_2 = itemName.charAt(i);
-            if(char_1 != char_2)
+            if(char_1 !== char_2)
                 ++addedOffset;
 
-            if (i - addedOffset == offsetThreshold)
+            if (i - addedOffset === offsetThreshold)
                 break;
         }
 
         currentOffset += addedOffset;
         currentOffset -= lenDiff;
 
-        if(itemName.charAt(currentOffset) == "<")
+        if(itemName.charAt(currentOffset) === "<")
         {
             --currentOffset;
             --addedOffset;
@@ -304,7 +304,7 @@ function deleteUntilLineEnd()
     // console.log("substring_End: " + substring_End);
 
     var htmlTags = substring_End.match(/(<\/b>)|(<\/u>)|(<\/i>)|(<i>)|(<u>)|(<b>)/g);
-    if(htmlTags != null)
+    if(htmlTags !== null)
     {
         var htmlEndTags = htmlTags.join("");
 
@@ -357,7 +357,7 @@ function deleteWord(e, bToNextWord)
     var regexStringToUse;
     if(bNormalCharUnderCursor)
         regexStringToUse = /([^a-zåäöA-ZÅÄÖ0-9\_])/;
-    else if(underCursorChar == " ")
+    else if(underCursorChar === " ")
         regexStringToUse = /([a-zåäöA-ZÅÄÖ0-9~@#\^\$&\*\(\)-_\+=\[\]\{\}\|\\,\.\?\\s])/
         // regexStringToUse = /([a-zåäöA-ZÅÄÖ0-9#</>])/
     else
@@ -380,7 +380,7 @@ function deleteWord(e, bToNextWord)
     var modifiedStringStart = "";
     if(firstPartOfWord)
     {
-        if(regexStringToUse.test(underCursorChar) == regexStringToUse.test(firstPartOfWord))
+        if(regexStringToUse.test(underCursorChar) === regexStringToUse.test(firstPartOfWord))
             modifiedStringStart = substring_Start.substring(0, currentOffset - firstPartOfWord.length);
         else
             modifiedStringStart = substring_Start;
@@ -473,7 +473,7 @@ function deleteUntilWordEnd(bToNextWord)
     // console.log("subStrSplit_End: " + subStrSplit_End);
     // console.log("modifiedStrEnd: " + modifiedStrEnd);
 
-    const bRemovedEntireWord = substring_Start.charAt(substring_Start.length-1) == ">";
+    const bRemovedEntireWord = substring_Start.charAt(substring_Start.length-1) === ">";
     if(bRemovedEntireWord)
     {
         finalstring = finalstring.replace(/(<u><\/u>)/g, "");
@@ -499,13 +499,13 @@ function SearchWordUnderCursor()
 
     const underCursorChar = itemName.charAt(currentOffset); 
     const bNormalCharUnderCursor = /[a-zåäöA-ZÅÄÖ0-9#]/.test(underCursorChar);
-    if(bNormalCharUnderCursor == false)
+    if(bNormalCharUnderCursor === false)
         return;
 
     var finalString = "";
 
     const prevCharOffset = currentOffset - 1;
-    const standingOnFirstCharOfWord = itemName.charAt(prevCharOffset) == " "; 
+    const standingOnFirstCharOfWord = itemName.charAt(prevCharOffset) === " "; 
     // console.log("standing on first char: " + standingOnFirstCharOfWord)
     if(prevCharOffset < 0 || standingOnFirstCharOfWord)
     {
@@ -614,7 +614,7 @@ function createMirrorFromMirror(mirrorToCopy, parent, prio)
     return duplicatedItem;
 }
 
-// we can take shortcuts and reduce costs if we know that 
+// we can take shortcuts and reduce costs if we know that
 // the item chain doesn't contain any 'completed' items
 function createItemFromCompletelessItem(itemToCopy, parent, prio)
 {
@@ -627,7 +627,8 @@ function createItemFromCompletelessItem(itemToCopy, parent, prio)
     if (IsMirror(itemToCopy) && IsItemVirutalRoot(itemToCopy))
         return createMirror(itemToCopy, parent, prio);
 
-    const focusParent = WF.focusedItem().getParent();
+    const focusedItem = WF.focusedItem();
+    const focusParent = focusedItem ? focusedItem.getParent() : null;
 
     var originalParent = parent;
     if (IsMirror(parent))
@@ -644,7 +645,7 @@ function createItemFromCompletelessItem(itemToCopy, parent, prio)
         createdItem = GetMirroredItem(createdItem);
 
     var kids = itemToCopy.getChildren();
-    if (kids !== undefined && kids.length != 0) 
+    if (kids !== undefined && kids.length !== 0) 
     {
         for(var i=0, len=kids.length; i < len; i++)
         {
@@ -685,13 +686,14 @@ function createItemFrom(itemToCopy, parent, prio)
     if(itemToCopy.equals(parent))
         return;
 
-    if(!WF.focusedItem())
-            return;
+    const focusedItem = WF.focusedItem();
+    if(!focusedItem)
+        return;
 
     if (IsMirror(itemToCopy) && IsItemVirutalRoot(itemToCopy))
         return createMirror(itemToCopy, parent, prio);
 
-    const focusParent = WF.focusedItem().getParent();
+    const focusParent = focusedItem.getParent();
 
     // always expand the parent in case we might be creating
     // completed items down the recursive chain.
@@ -723,7 +725,7 @@ function createItemFrom(itemToCopy, parent, prio)
         WF.completeItem(createdItem);
 
     var kids = itemToCopy.getChildren();
-    if (kids !== undefined && kids.length != 0) 
+    if (kids !== undefined && kids.length !== 0) 
     {
         for(var i=0, len=kids.length; i < len; i++)
         {
@@ -768,10 +770,10 @@ function IsBufferValid(InBufferToQuery)
     if (InBufferToQuery === undefined)
         return false;
 
-    if (InBufferToQuery.length == 0)
+    if (InBufferToQuery.length === 0)
         return false;
 
-    if (InBufferToQuery[0] == null)
+    if (InBufferToQuery[0] === null)
         return false;
 
     if (InBufferToQuery[0] === undefined)
@@ -794,7 +796,7 @@ function pasteYankedItems_Copies(bAboveFocusedItem)
     var focusedItem = WF.focusedItem();
 
     var parentItem = focusedItem.getParent();
-    if(parentItem == null)
+    if(parentItem === null)
         return;
 
     const currentItem = WF.currentItem();
@@ -868,7 +870,7 @@ function pasteYankedItems_Duplicates(bAboveFocusedItem)
     var focusedItem = WF.focusedItem();
 
     var parentItem = focusedItem.getParent();
-    if(parentItem == null)
+    if(parentItem === null)
         return;
 
     const currentItem = WF.currentItem();
@@ -948,7 +950,7 @@ function pasteYankedItems_Duplicates(bAboveFocusedItem)
     }
 
     // might fail due to collapse animations
-    if(bSuccessfulPaste == false)
+    if(bSuccessfulPaste === false)
     {
         console.warn("unsuccessful paste due to collapse animations taking to long");
         WF.undo();
@@ -958,185 +960,6 @@ function pasteYankedItems_Duplicates(bAboveFocusedItem)
             WF.editItemName(WF.currentItem());
         }
     }
-}
-
-function pasteYankedItems_DEPRECATED(bAboveFocusedItem)
-{
-    if (yankItemBuffer_Duplicates === undefined || yankItemBuffer_Duplicates.length == 0)
-        return;
-
-    if (yankItemBuffer_Duplicates[0] == null || yankItemBuffer_Duplicates[0] === undefined)
-        return;
-
-    var focusedItem = WF.focusedItem();
-
-    var parentItem = focusedItem.getParent();
-    if(parentItem == null)
-        return;
-
-    const currentItem = WF.currentItem();
-    if(focusedItem.equals(currentItem))
-        parentItem = currentItem;
-
-    var bSuccessfulPaste = true;
-
-    WF.editGroup(() => 
-    {
-        /**
-         * 
-         * check if we can duplicate the item rather then creating a new one 
-         * 
-         * the duplicated item will be placed were the original is,
-         * regardless of where we have focus right now.
-         * It'll steal our focus as well...
-         */
-        var bPastingDeadItems = true;
-        const tempItem = WF.duplicateItem(yankItemBuffer_Duplicates[0]);
-        if(tempItem)
-        {
-            const tempItemParent = yankItemBuffer_Duplicates[0].getParent();
-            if(IsMirror(tempItemParent))
-            {
-                const itemToGetBackTo = WF.currentItem();
-                const originalTempitemParent = GetOriginalItem(tempItemParent);
-                WF.zoomTo(originalTempitemParent);
-                WF.deleteItem(tempItem);
-                WF.zoomTo(itemToGetBackTo);
-            }
-            else
-            {
-                WF.deleteItem(tempItem);
-            }
-            bPastingDeadItems = false;
-        }
-
-        bPastingDeadItems = false;
-
-        var createdItems = [];
-
-        if(bPastingDeadItems)
-        {
-            if(ContainsCompletedItem(yankItemBuffer_Duplicates))
-            {
-                const bWasParentExpanded = parentItem.isExpanded();
-                const focusParent = WF.focusedItem().getParent();
-                WF.expandItem(parentItem);
-
-                for (var i = 0, len = yankItemBuffer_Duplicates.length; i < len; i++)
-                {
-                    var createdItem = createItemFrom(
-                        yankItemBuffer_Duplicates[i],
-                        parentItem,
-                        yankItemBuffer_Duplicates[i].getPriority() + 1,    // the +1 is for tricking workflowy
-                    );
-
-                    createdItems.push(createdItem);
-                }
-
-                if(!bWasParentExpanded)
-                {
-                    WF.editItemName(parentItem);
-                    WF.collapseItem(parentItem);
-
-                    // fix focus loss problem when collapsing, due to animation
-                    if(!WF.focusedItem())
-                    {
-                        requestAnimationFrame(fixFocus);
-                        WF.editItemName(focusParent);
-                        if(!WF.focusedItem())
-                        {
-                            WF.editItemName(WF.currentItem());
-                        }
-                    }
-                }
-
-            }
-            else
-            {
-                for (var i = 0, len = yankItemBuffer_Duplicates.length; i < len; i++)
-                {
-                    var createdItem = createItemFromCompletelessItem(
-                        yankItemBuffer_Duplicates[i],
-                        parentItem,
-                        yankItemBuffer_Duplicates[i].getPriority() + 1,    // the +1 is for tricking workflowy
-                    );
-
-                    createdItems.push(createdItem);
-                }
-            }
-        }
-        else
-        {
-            for (var i = 0, len = yankItemBuffer_Duplicates.length; i < len; i++)
-            {
-                var createdItem = null;
-                if(IsMirror(yankItemBuffer_Duplicates[i]) || IsBeingMirrored(yankItemBuffer_Duplicates[i]))
-                {
-                    createdItem = createMirror(yankItemBuffer_Duplicates[i], yankItemBuffer_Duplicates[i].getParent(), yankItemBuffer_Duplicates[i].getPriority());
-                }
-                else
-                {
-                    createdItem = WF.duplicateItem(yankItemBuffer_Duplicates[i]);
-                    const createdItemName = createdItem.getName();
-                    const nameWithoutCopyTag = createdItemName.substring(0, createdItemName.length - 6);
-                    WF.setItemName(createdItem, nameWithoutCopyTag);
-                    createdItems.push(createdItem);
-                }
-
-                createdItems.push(createdItem);
-            }
-        }
-
-        if(ContainsInvalidItem(createdItems))
-        {
-            bSuccessfulPaste = false;
-
-            // remove stale references 
-            createdItems = createdItems.filter(Boolean);
-        }
-
-        if(createdItems.length > 0)
-        {
-            if(focusedItem.equals(WF.currentItem()))
-                WF.moveItems(createdItems, focusedItem, 0);
-            else if(bAboveFocusedItem)
-                WF.moveItems(createdItems, parentItem, focusedItem.getPriority());
-            else
-                WF.moveItems(createdItems, parentItem, focusedItem.getPriority()+1);
-        }
-
-        // focus on top most pasted item
-        if(bAboveFocusedItem)
-        {
-            const newKidsOnTheBlock = focusedItem.getParent().getChildren();
-            const topMostPastedItemIndex = focusedItem.getPriority() - createdItems.length;
-            WF.editItemName(newKidsOnTheBlock[topMostPastedItemIndex]);
-        }
-        else
-        {
-            WF.editItemName(focusedItem.getNextVisibleSibling());
-        }
-
-        if(!WF.focusedItem())
-        {
-            requestAnimationFrame(fixFocus);
-            WF.editItemName(WF.currentItem());
-        }
-
-    });
-
-    // might fail due to collapse animations
-    if(bSuccessfulPaste == false)
-    {
-        console.error("unsuccessful paste due to collapse animations taking to long");
-        WF.undo();
-        if(!WF.focusedItem())
-        {
-            requestAnimationFrame(fixFocus);
-            WF.editItemName(WF.currentItem());
-        }
-    }
-
 }
 
 function getChildOfCurrentItem(itemToQuery)
@@ -1159,7 +982,7 @@ function getChildOfCurrentItem(itemToQuery)
 function toggleExpand(t)
 {
     const focusedItem = WF.focusedItem();
-    if(focusedItem == null)
+    if(focusedItem === null)
         return;
 
     // expansion/collapse isn't supported by WF when searching
@@ -1216,13 +1039,13 @@ function toggleExpandAll(e)
 
     const children = focusedItemParent.getVisibleChildren();
     // const children = currentItem.getVisibleChildren();
-    if (children === undefined || children.length == 0)
+    if (children === undefined || children.length === 0)
         return;
 
     var bExpandAll = false;
 
     const focusKids = focusedItem.getVisibleChildren(); 
-    if(focusKids !== undefined && focusKids.length != 0)
+    if(focusKids !== undefined && focusKids.length !== 0)
     {
         bExpandAll = !focusedItem.isExpanded();
     }
@@ -1234,7 +1057,7 @@ function toggleExpandAll(e)
         for (var i = 0, len = children.length; i < len; i++)
         {
             const itemKids = children[i].getVisibleChildren();
-            const bHasKids = itemKids !== undefined && itemKids.length != 0;
+            const bHasKids = itemKids !== undefined && itemKids.length !== 0;
             if(bHasKids)
             {
                 if (children[i].isExpanded())
@@ -1245,12 +1068,12 @@ function toggleExpandAll(e)
         }
 
         // none of the items have any kids => nothing to expand or collapse
-        if(numExpanded == 0 && numCollapsed == 0)
+        if(numExpanded === 0 && numCollapsed === 0)
             return;
 
-        if(numExpanded == 0)
+        if(numExpanded === 0)
             bExpandAll = true;
-        else if(numCollapsed == 0)
+        else if(numCollapsed === 0)
             bExpandAll = false;
         else
         {    
@@ -1290,7 +1113,7 @@ function enterVisualMode(t)
 {
         var focusedItem = WF.focusedItem();
 
-        if(focusedItem == null)
+        if(focusedItem === null)
             return;
 
         const currentItem = WF.currentItem();
@@ -1298,8 +1121,8 @@ function enterVisualMode(t)
         const bFocusIsCurrent = focusedItem.equals(currentItem);
         if(bFocusIsCurrent)
         {
-            const visibleKids = focusedItem.getVisibleChildren(); 
-            if(visibleKids.length == 0)
+            const visibleKids = focusedItem.getVisibleChildren();
+            if(!visibleKids || visibleKids.length === 0)
                 return;
 
             WF.editItemName(visibleKids[0]);
@@ -1321,11 +1144,11 @@ function MoveItemDown(t)
 {
         const focusedItem = WF.focusedItem();
         const nextItem = focusedItem.getNextVisibleSibling();
-        if(nextItem == null)
+        if(nextItem === null)
             return;
 
         const nextNextItem = nextItem.getNextVisibleSibling();
-        if(nextNextItem != null)
+        if(nextNextItem !== null)
         {
             WF.editItemName(nextNextItem);
             if(focusedItem.equals(WF.focusedItem()) && nextItem.isExpanded() && WF.currentSearchQuery() === null)
@@ -1344,7 +1167,7 @@ function MoveItemUp(t)
 {
         const focusedItem = WF.focusedItem();
         const prevItem = focusedItem.getPreviousVisibleSibling();
-        if(prevItem == null)
+        if(prevItem === null)
             return;
 
         const parentItem = prevItem.getParent();
@@ -1366,7 +1189,7 @@ function addKidsRecursively(itemContainer, item, bOnlyExpanded = true)
         return;
 
     let kids = item.getChildren();
-    if (kids !== undefined && kids.length != 0) 
+    if (kids !== undefined && kids.length !== 0) 
     {
         for (var i = 0, len = kids.length; i < len; i++)
         {
@@ -1383,7 +1206,7 @@ function addKidsRecursively(itemContainer, item, bOnlyExpanded = true)
 function toggleCompletedOnSelection(e)
 {
     let selection = WF.getSelection();
-    if (selection === undefined || selection.length == 0) 
+    if (selection === undefined || selection.length === 0) 
         return;
 
     e.preventDefault()
@@ -1401,9 +1224,9 @@ function toggleCompletedOnSelection(e)
     }
     
     let bCompleteAll = false;
-    if(numCompleted == 0)
+    if(numCompleted === 0)
         bCompleteAll  = true;
-    else if(numUncompleted == 0)
+    else if(numUncompleted === 0)
         bCompleteAll = false;
     else
     {    
@@ -1424,7 +1247,7 @@ function toggleCompletedOnSelection(e)
     {
         for (var i = 0, len = selection.length; i < len; i++)
         {
-            if(selection[i].isCompleted() != bCompleteAll)
+            if(selection[i].isCompleted() !== bCompleteAll)
                 WF.completeItem(selection[i]);
         }
     });
@@ -1433,25 +1256,25 @@ function toggleCompletedOnSelection(e)
 function RotateSelectionPreMoveBuffer()
 {
         var selection = WF.getSelection();
-        if (selection === undefined || selection.length == 0) 
+        if (selection === undefined || selection.length === 0) 
             selection = SelectionPreMove;
 
-        if (selection !== undefined && selection.length != 0)
+        if (selection !== undefined && selection.length !== 0)
             SelectionPreMove = selection;
 }
 
 function MoveSelectionDown(t)
 {
     var selection = WF.getSelection();
-    if (selection === undefined || selection.length == 0) 
+    if (selection === undefined || selection.length === 0) 
         selection = SelectionPreMove;
 
-    if (selection !== undefined && selection.length != 0)
+    if (selection !== undefined && selection.length !== 0)
     {
         SelectionPreMove = selection;
 
         const nextItem = selection[selection.length-1].getNextVisibleSibling();
-        if(nextItem == null)
+        if(nextItem === null)
             return;
 
         const parentItem = nextItem.getParent();
@@ -1459,7 +1282,7 @@ function MoveSelectionDown(t)
         // collapse the Item inbetween us and the destination
         // if we can't "see" far enough to remain in focus
         const nextNextItem = nextItem.getNextVisibleSibling();
-        if(nextNextItem != null && nextItem.getChildren().length != 0 && nextItem.isExpanded())
+        if(nextNextItem !== null && nextItem.getChildren().length !== 0 && nextItem.isExpanded())
         {
             const focusedItem = WF.focusedItem();
             WF.editItemName(nextNextItem);
@@ -1485,7 +1308,7 @@ function MoveSelectionDown(t)
             // collapse the Item inbetween us and the destination
             // if we can't "see" far enough to remain in focus
             const nextNextItem = nextItem.getNextVisibleSibling();
-            if(nextNextItem != null && nextItem.getChildren().length != 0 && nextItem.isExpanded())
+            if(nextNextItem !== null && nextItem.getChildren().length !== 0 && nextItem.isExpanded())
             {
                 WF.editItemName(nextNextItem);
                 if(focusedItem.equals(WF.focusedItem()) && WF.currentSearchQuery() === null)
@@ -1506,15 +1329,15 @@ function MoveSelectionDown(t)
 function MoveSelectionUp(t)
 {
     var selection = WF.getSelection();
-    if (selection === undefined || selection.length == 0) 
+    if (selection === undefined || selection.length === 0) 
         selection = SelectionPreMove;
 
-    if (selection !== undefined && selection.length != 0)
+    if (selection !== undefined && selection.length !== 0)
     {
         SelectionPreMove = selection;
 
         const prevItem = selection[0].getPreviousVisibleSibling();
-        if(prevItem == null)
+        if(prevItem === null)
             return;
 
         const parentItem = prevItem.getParent();
@@ -1634,7 +1457,7 @@ function yankSelectedItemsByMirroring()
     var tempYankBuffer = [WF.focusedItem()];
 
     const selection = WF.getSelection();
-    if (selection !== undefined && selection.length != 0) 
+    if (selection !== undefined && selection.length !== 0) 
         tempYankBuffer = selection;
     
     // only allow one buffer to be valid when yanking
@@ -1664,7 +1487,7 @@ function yankSelectedItemsByCopy()
     var tempYankBuffer = [WF.focusedItem()];
 
     const selection = WF.getSelection();
-    if (selection !== undefined && selection.length != 0) 
+    if (selection !== undefined && selection.length !== 0) 
         tempYankBuffer = selection;
     
     // only allow one buffer to be valid when yanking
@@ -1696,7 +1519,7 @@ function yankSelectedItemsByDuplication()
     yankItemBuffer_Duplicates = [];
 
     const selection = WF.getSelection();
-    if (selection !== undefined && selection.length != 0) 
+    if (selection !== undefined && selection.length !== 0) 
         yankItemBuffer_Duplicates = selection;
     else 
         yankItemBuffer_Duplicates = [WF.focusedItem()];
@@ -1713,7 +1536,7 @@ function yankSelectedItems_DEPRECATED(t)
         return;
 
     const selection = WF.getSelection();
-    if (selection !== undefined && selection.length != 0) 
+    if (selection !== undefined && selection.length !== 0) 
         yankItemBuffer_Duplicates = selection;
     else 
         yankItemBuffer_Duplicates = [WF.focusedItem()];
@@ -1732,7 +1555,7 @@ function detachMirrorOnSelectedItems()
     var currentSelection = [WF.focusedItem()];
 
     const selection = WF.getSelection();
-    if (selection !== undefined && selection.length != 0) 
+    if (selection !== undefined && selection.length !== 0) 
         currentSelection = selection;
 
     WF.editGroup(() => 
@@ -1925,12 +1748,14 @@ function ExitVisualMode(t)
 
 function indentSelection(e)
 {
-    var selection = WF.getSelection();
+    var selection = VisualSelectionBuffer.length !== 0
+        ? VisualSelectionBuffer
+        : WF.getSelection();
 
-    if (selection === undefined || selection.length == 0) 
+    if (selection === undefined || selection.length === 0)
         selection = SelectionPreMove;
 
-    if (selection === undefined || selection.length == 0)
+    if (selection === undefined || selection.length === 0)
         return;
 
     var prio = 0;
@@ -1939,13 +1764,13 @@ function indentSelection(e)
     if(newParentItem)
     {
         const kids = newParentItem.getChildren(); 
-        if(kids.length != 0)
+        if(kids.length !== 0)
             prio = kids[kids.length-1].getPriority()+1;
     }
 
     SelectionPreMove = selection;
 
-    if(newParentItem == null || newParentItem === undefined)
+    if(newParentItem === null || newParentItem === undefined)
         return;
 
     const currentOffset = state.get().anchorOffset
@@ -1958,7 +1783,7 @@ function indentSelection(e)
         WF.setSelection(selection);
 
         // @TODO: this will only work if the expansion is instant
-        // if(newParentItem.getChildren().length != 0 && !newParentItem.isExpanded())
+        // if(newParentItem.getChildren().length !== 0 && !newParentItem.isExpanded())
         //   WF.expandItem(newParentItem);
 
     });
@@ -2003,7 +1828,7 @@ function indentFocusedItem(e)
 
     var prio = 0;
         const kids = focusPrevSibling.getChildren(); 
-        if(kids.length != 0)
+        if(kids.length !== 0)
             prio = kids[kids.length-1].getPriority()+1;
 
     const currentOffset = state.get().anchorOffset
@@ -2080,11 +1905,14 @@ function outdentFocusedItem(e)
 
 function outdentSelection(e, bIncludingChildren = false)
 {
-    var selection = WF.getSelection();
-    if (selection === undefined || selection.length == 0) 
+    var selection = VisualSelectionBuffer.length !== 0
+        ? VisualSelectionBuffer
+        : WF.getSelection();
+
+    if (selection === undefined || selection.length === 0)
         selection = SelectionPreMove;
 
-    if (selection === undefined || selection.length == 0)
+    if (selection === undefined || selection.length === 0)
         return;
 
     const selectionParent = selection[0].getParent();
@@ -2111,7 +1939,7 @@ function outdentSelection(e, bIncludingChildren = false)
             for (var i = 0, len = selection.length; i < len; i++)
             {
                 const kids = selection[i].getVisibleChildren();
-                if (kids !== undefined && kids.length != 0) 
+                if (kids !== undefined && kids.length !== 0) 
                 {
                     const destinationParent = selection[i].getParent();
                     const destinationPriority = selection[i].getPriority() + 1;
@@ -2129,7 +1957,7 @@ function outdentSelection(e, bIncludingChildren = false)
 
     SelectionPreMove = selection;
 
-    if(newParentItem == null || newParentItem === undefined)
+    if(newParentItem === null || newParentItem === undefined)
         return;
 
     const currentOffset = state.get().anchorOffset
@@ -2142,7 +1970,7 @@ function outdentSelection(e, bIncludingChildren = false)
         WF.setSelection(selection);
 
         // @TODO: this will only work if the expansion is instant
-        // if(newParentItem.getChildren().length != 0 && !newParentItem.isExpanded())
+        // if(newParentItem.getChildren().length !== 0 && !newParentItem.isExpanded())
         //   WF.expandItem(newParentItem);
     });
 
@@ -2181,7 +2009,7 @@ function deleteSelectedItems(t)
         return;
 
     var CurrentSelection = WF.getSelection();
-    if (CurrentSelection !== undefined && CurrentSelection.length != 0) 
+    if (CurrentSelection !== undefined && CurrentSelection.length !== 0) 
     {
         minNumAncestors = GetMinNumAncestors(CurrentSelection);
         var filteredSelection = CurrentSelection.filter(function(item, index, arr)
@@ -2201,7 +2029,7 @@ function deleteSelectedItems(t)
             }
         }
 
-        if(topMostItem && topMostItem.getPriority() != 0 && topMostItem.getPreviousVisibleSibling())
+        if(topMostItem && topMostItem.getPriority() !==0 && topMostItem.getPreviousVisibleSibling())
             WF.editItemName(topMostItem.getPreviousVisibleSibling());
         else if(topMostItem && topMostItem.getParent())
             WF.editItemName(topMostItem.getParent());
@@ -2267,7 +2095,7 @@ function visualMode_AddItemToSelection_Above(t)
     if(focusedItem.equals(currentItem))
         return;
 
-    if(focusedItem.getPriority() == 0 && focusedItem.getParent().equals(currentItem))
+    if(focusedItem.getPriority() === 0 && focusedItem.getParent().equals(currentItem))
         return;
 
     // fix for invisible siblings that are placed at the top
@@ -2278,7 +2106,7 @@ function visualMode_AddItemToSelection_Above(t)
     if(previousVisibleSibling && previousVisibleSibling.equals(currentItem))
         return;
 
-    var currentSelection = VisualSelectionBuffer.length != 0 ? VisualSelectionBuffer : WF.getSelection();
+    var currentSelection = VisualSelectionBuffer.length !== 0 ? VisualSelectionBuffer : WF.getSelection();
     const itemAtStart = focusedItem;
 
     if(itemAtStart && !containsItem(currentSelection, itemAtStart))
@@ -2296,7 +2124,7 @@ function visualMode_AddItemToSelection_Above(t)
 
     // if (YoungerThenInitial || SameAgeButDifferentBranch || bDifferentTree)
     if(  (WF.focusedItem().getAncestors().length > InitialSelectionItem.getAncestors().length)
-        || (WF.focusedItem().getAncestors().length == InitialSelectionItem.getAncestors().length) && (!WF.focusedItem().getParent().equals(InitialSelectionItem.getParent()))
+        || (WF.focusedItem().getAncestors().length === InitialSelectionItem.getAncestors().length) && (!WF.focusedItem().getParent().equals(InitialSelectionItem.getParent()))
         || (!WF.focusedItem().getParent().equals(WF.currentItem())) && (!getChildOfCurrentItem(WF.focusedItem()).equals(getChildOfCurrentItem(InitialSelectionItem))))
     {
         const prevSibling = focusedItem.getPreviousVisibleSibling(); 
@@ -2342,7 +2170,7 @@ function visualMode_AddItemToSelection_Above(t)
         {
             const itemIndex = item.getPriority();
             const itemAncestors = item.getAncestors()
-            if(itemAncestors.length == itemAfterMoveAncestors.length)
+            if(itemAncestors.length === itemAfterMoveAncestors.length)
             {
                 return itemIndex <= Math.max(itemSelectionIndexCommonToItemAfterMove, indexOfItemAfterMove); 
             }
@@ -2355,7 +2183,7 @@ function visualMode_AddItemToSelection_Above(t)
         {
             const itemIndex = item.getPriority();
             const itemAncestors = item.getAncestors()
-            if(itemAncestors.length == itemAfterMoveAncestors.length)
+            if(itemAncestors.length === itemAfterMoveAncestors.length)
             {
                 return itemIndex <= Math.max(itemSelectionIndexCommonToItemAfterMove, indexOfItemAfterMove); 
             }
@@ -2378,7 +2206,7 @@ function visualMode_AddItemToSelection_Above(t)
                     }
                 }
 
-                if(childrenRemaining == 0)
+                if(childrenRemaining === 0)
                     return true;
                 else
                     return false;
@@ -2437,7 +2265,7 @@ function visualMode_AddItemToSelection_Below(t)
     if(focusedItem.getParent().equals(WF.currentItem()) && !focusedItem.getNextVisibleSibling())
     {
         const focusKids = focusedItem.getVisibleChildren();
-        if(focusKids.length == 0 || (!focusedItem.equals(InitialSelectionItem) && !containsItem(InitialSelectionItem.getAncestors(), focusedItem)))
+        if(focusKids.length === 0 || (!focusedItem.equals(InitialSelectionItem) && !containsItem(InitialSelectionItem.getAncestors(), focusedItem)))
         {
             return;
         }
@@ -2445,7 +2273,7 @@ function visualMode_AddItemToSelection_Below(t)
 
     const itemAtStart = focusedItem; 
 
-    var currentSelection = VisualSelectionBuffer.length != 0 ? VisualSelectionBuffer : WF.getSelection();
+    var currentSelection = VisualSelectionBuffer.length !== 0 ? VisualSelectionBuffer : WF.getSelection();
 
     if(itemAtStart && !containsItem(currentSelection, itemAtStart))
         currentSelection.push(itemAtStart);
@@ -2454,7 +2282,7 @@ function visualMode_AddItemToSelection_Below(t)
 
     // if (YoungerThenInitial || SameAgeButDifferentBranch || bDifferentTree)
     if(  (WF.focusedItem().getAncestors().length > InitialSelectionItem.getAncestors().length)
-        || (WF.focusedItem().getAncestors().length == InitialSelectionItem.getAncestors().length) && (!WF.focusedItem().getParent().equals(InitialSelectionItem.getParent()))
+        || (WF.focusedItem().getAncestors().length === InitialSelectionItem.getAncestors().length) && (!WF.focusedItem().getParent().equals(InitialSelectionItem.getParent()))
         || (!WF.focusedItem().getParent().equals(WF.currentItem())) && (!getChildOfCurrentItem(WF.focusedItem()).equals(getChildOfCurrentItem(InitialSelectionItem))))
     {
         const nextSibling = focusedItem.getNextVisibleSibling(); 
@@ -2516,7 +2344,7 @@ function visualMode_AddItemToSelection_Below(t)
         {
             const itemIndex = item.getPriority();
             const itemAncestors = item.getAncestors()
-            if(itemAncestors.length == itemAfterMoveAncestors.length && item.getParent().equals(itemAfterMove.getParent()))
+            if(itemAncestors.length === itemAfterMoveAncestors.length && item.getParent().equals(itemAfterMove.getParent()))
             {
                 return itemIndex >= Math.min(itemSelectionIndexCommonToItemAfterMove, indexOfItemAfterMove); 
             }
@@ -2535,7 +2363,7 @@ function visualMode_AddItemToSelection_Below(t)
         {
             const itemIndex = item.getPriority();
             const itemAncestors = item.getAncestors()
-            if(itemAncestors.length == itemAfterMoveAncestors.length)
+            if(itemAncestors.length === itemAfterMoveAncestors.length)
             {
                 return itemIndex >= Math.min(itemSelectionIndexCommonToItemAfterMove, indexOfItemAfterMove); 
             }
@@ -2562,7 +2390,7 @@ function visualMode_AddItemToSelection_Below(t)
                     }
                 }
 
-                if(childrenRemaining == 0)
+                if(childrenRemaining === 0)
                 {
                     // console.log("all kids included");
                     return true;
@@ -2792,7 +2620,7 @@ function reselectItemsBeingMoved()
     // Bulk moving items deselects them...
     // Reselecting them during the same event "frame"
     // does not work - which is why we do it on the keyup event for now.
-    if (SelectionPreMove !== undefined && SelectionPreMove.length != 0) 
+    if (SelectionPreMove !== undefined && SelectionPreMove.length !== 0) 
     {
         WF.setSelection(SelectionPreMove);
         SelectionPreMove = [];
@@ -2810,7 +2638,7 @@ function updateKeyBuffer_Keydown(event)
     if(keyBuffer.includes(key_Slash))
     {
 
-        if(key == 'Backspace')
+        if(key === 'Backspace')
         {
             if(keyBuffer.length > 1)
             {
@@ -2838,7 +2666,7 @@ function updateKeyBuffer_Keydown(event)
             WF.showMessage(keyBufferStr.bold(), false);
         }
     }
-    else if(key == key_Slash)
+    else if(key === key_Slash)
     {
         if(state.get().mode === Mode.NORMAL)
         {
@@ -2855,7 +2683,7 @@ function updateKeyBuffer_Keydown(event)
         keyBuffer = [...keyBuffer, key];
     }
 
-    if(keyBuffer.includes(key_Slash) && key != key_Esc)
+    if(keyBuffer.includes(key_Slash) && key !== key_Esc)
     {
         return true;
     }
@@ -2870,7 +2698,7 @@ function updateKeyBuffer_Keyup(event)
 
     if(keyBuffer.includes(key_Slash))
     {
-        if(key == key_Esc)
+        if(key === key_Esc)
         {
             keyBuffer = [];
             // console.log("clearing buffer and search");
@@ -2879,9 +2707,9 @@ function updateKeyBuffer_Keyup(event)
             WF.clearSearch();
             WF.editItemName(WF.currentItem());
         }
-        else if(key == 'Enter' || keyBuffer.includes('Enter'))
-        // else if(searchQuery !== null && key == 'Enter' || keyBuffer.includes('Enter') )
-        // else if(key == 'Enter')
+        else if(key === 'Enter' || keyBuffer.includes('Enter'))
+        // else if(searchQuery !== null && key === 'Enter' || keyBuffer.includes('Enter') )
+        // else if(key === 'Enter')
         {
             // console.log(searchQuery);
 
@@ -2900,7 +2728,7 @@ function updateKeyBuffer_Keyup(event)
 
                 // only show this message if you start hammering
                 // button while the search is doing its thing
-                if(key != 'Enter')
+                if(key !== 'Enter')
                 {
                     WF.hideMessage();
                     WF.showMessage("Waiting for search Query to complete...".bold(), true);
@@ -2958,7 +2786,7 @@ function updateKeyBuffer_Keyup(event)
 
         }
     }
-    else if(searchQuery !== null && key == 'Escape')
+    else if(searchQuery !== null && key === 'Escape')
     {
             WF.search("");
             WF.clearSearch();
@@ -2984,7 +2812,7 @@ function sortCompletedItemsOnFocusParent(t)
         parentItem = currentItem;
 
     const visibleChildren = parentItem.getVisibleChildren();
-    if (visibleChildren === undefined || visibleChildren.length == 0) 
+    if (visibleChildren === undefined || visibleChildren.length === 0) 
         return;
 
     var completedKids = [];
@@ -2994,7 +2822,7 @@ function sortCompletedItemsOnFocusParent(t)
             completedKids.push(visibleChildren[i]);
     }
 
-    if(completedKids.length == 0)
+    if(completedKids.length === 0)
         return;
 
     completedKids.sort((a, b) => b.getCompletedDate() - a.getCompletedDate());
@@ -3023,7 +2851,7 @@ function zoomOutFocused()
 {
     const focusedItem = WF.focusedItem();
 
-    if(focusedItem == null)
+    if(focusedItem === null)
         return;
 
     const currentItem = WF.currentItem();
@@ -3059,14 +2887,14 @@ function zoomOutFocused()
 function zoomInFocused()
 {
     const focusedItem = WF.focusedItem();
-    if(focusedItem == null)
+    if(focusedItem === null)
         return;
 
     const focusedAncestors = focusedItem.getAncestors();
-    if(focusedAncestors.length == 0)
+    if(focusedAncestors.length === 0)
         return;
 
-    if(focusedAncestors.length == 1)
+    if(focusedAncestors.length === 1)
     {
         WF.zoomTo(focusedItem);
         setCursorAt(state.get().anchorOffset);
@@ -3114,7 +2942,7 @@ function zoomInInstantly()
             WF.zoomTo(focusedItem);
 
             const kids = focusedItem.getVisibleChildren();
-            if(kids !== undefined && kids.length != 0)
+            if(kids !== undefined && kids.length !== 0)
                 WF.editItemName(kids[0]);
             else
                 WF.editItemName(focusedItem);
@@ -3143,16 +2971,16 @@ function addSiblingsFromInitList(bSiblingsAboveInitItem = true)
         return;
 
     var selection = WF.getSelection();
-    if (selection === undefined || selection.length == 0) 
+    if (selection === undefined || selection.length === 0) 
         selection = SelectionPreMove;
 
-    if (selection === undefined || selection.length == 0)
+    if (selection === undefined || selection.length === 0)
         return;
 
     const initParent = InitialSelectionItem.getParent();
     const initPrio = InitialSelectionItem.getPriority();
     const siblings = initParent.getVisibleChildren();
-    if (siblings === undefined || siblings.length == 0) 
+    if (siblings === undefined || siblings.length === 0) 
         return;
 
     WF.editGroup(() => 
@@ -3168,7 +2996,7 @@ function addSiblingsFromInitList(bSiblingsAboveInitItem = true)
                 {
                     siblingsToBeAdded.push(item);
                 }
-                else if(item.getPriority() != initPrio)
+                else if(item.getPriority() !==initPrio)
                 {
                     siblingsToBeRemoved.push(item);
                 }
@@ -3183,7 +3011,7 @@ function addSiblingsFromInitList(bSiblingsAboveInitItem = true)
                 {
                     siblingsToBeAdded.push(item);
                 }
-                else if(item.getPriority() != initPrio)
+                else if(item.getPriority() !==initPrio)
                 {
                     siblingsToBeRemoved.push(item);
                 }
@@ -3214,10 +3042,10 @@ function addSiblingsFromCurrentList(bAbove = true)
         return;
 
     var selection = WF.getSelection();
-    if (selection === undefined || selection.length == 0) 
+    if (selection === undefined || selection.length === 0) 
         selection = SelectionPreMove;
 
-    if (selection === undefined || selection.length == 0)
+    if (selection === undefined || selection.length === 0)
         return;
 
     const initsCurrentItemAncestor = getChildOfCurrentItem(InitialSelectionItem);
@@ -3237,7 +3065,7 @@ function addSiblingsFromCurrentList(bAbove = true)
                 {
                     siblingsToBeAdded.push(item);
                 }
-                else if(item.getPriority() != initPrio)
+                else if(item.getPriority() !==initPrio)
                 {
                     siblingsToBeRemoved.push(item);
                 }
@@ -3252,7 +3080,7 @@ function addSiblingsFromCurrentList(bAbove = true)
                 {
                     siblingsToBeAdded.push(item);
                 }
-                else if(item.getPriority() != initPrio)
+                else if(item.getPriority() !==initPrio)
                 {
                     siblingsToBeRemoved.push(item);
                 }
@@ -3318,7 +3146,7 @@ function deleteUnderCursor(t)
 
     let desiredOffset = currentOffset;
     const maxLen = WF.focusedItem().getNameInPlainText().length;
-    if(maxLen == currentOffset)
+    if(maxLen === currentOffset)
         desiredOffset -= 1;
 
     moveCursorTo(t, offsetCalculator(state), desiredOffset);
@@ -3340,7 +3168,7 @@ function handleAfterMode(e)
             const num = keyBufferTempCopy.length;
             const key = keyBufferTempCopy[num-1] ;
             const modType = keyBufferTempCopy[num-3] ;
-            if(modType == 'd' && key == 'w')
+            if(modType === 'd' && key === 'w')
             {
                 deleteInnerWord(e, true);
             }
@@ -3366,17 +3194,17 @@ function handleInnerMode(e)
             const key = keyBufferTempCopy[num-1] ;
             const modType = keyBufferTempCopy[num-3] ;
             // console.log("mod type: " + modType);
-            if(modType == 'c')
+            if(modType === 'c')
             {
-                if(key == 'w')
+                if(key === 'w')
                 {
                     changeInnerWord(e);
                     goToInsertMode();
                 }
             }
-            else if(modType == 'd')
+            else if(modType === 'd')
             {
-                if(key == 'w')
+                if(key === 'w')
                 {
                     deleteInnerWord(e, false);
                 }
@@ -3396,7 +3224,7 @@ function changeInnerWord(e)
             const iterNum = parseInt(keyBufferTempCopy[keyBufferTempCopy.length-4]);
             for (let i = 1; i <= iterNum; ++i) 
             {
-                if(i == 1)
+                if(i === 1)
                     deleteWord(e, false);
                 else
                     deleteUntilWordEnd(false);
@@ -3418,7 +3246,7 @@ function deleteInnerWord(e, bAfterWord = false)
             const iterNum = parseInt(keyBufferTempCopy[keyBufferTempCopy.length-4]);
             for (let i = 1; i <= iterNum; ++i) 
             {
-                if(i == 1)
+                if(i === 1)
                     deleteWord(e, bAfterWord);
                 else
                     deleteUntilWordEnd(bAfterWord);
@@ -3440,7 +3268,7 @@ function handleFindMode(e)
     if(!focusedItem)
         return;
 
-    if(event.key == key_Esc)
+    if(event.key === key_Esc)
         return;
 
     const filteredKeys = keyBuffer.filter(function(value, index, arr)
@@ -3454,9 +3282,12 @@ function handleFindMode(e)
     keyBuffer = [];
 
     // check if we pressed 't' / 'f' or 'F' / 'T'
+    // lowercase 'f' or 't' means search forwards, uppercase 'F' or 'T' means search backwards
     let bSearchForwards = true;
-    if(filteredKeys.length > 1)
-        bSearchForwards = filteredKeys[filteredKeys.length-2] == filteredKeys[filteredKeys.length-2].toLowerCase(); 
+    if(filteredKeys.length > 1) {
+        const triggerKey = filteredKeys[filteredKeys.length-2];
+        bSearchForwards = (triggerKey === 'f' || triggerKey === 't');
+    } 
 
     const keyToFind = filteredKeys[filteredKeys.length-1];
     const currentOffset = state.get().anchorOffset;
@@ -3466,7 +3297,7 @@ function handleFindMode(e)
     ? itemNameText.indexOf(keyToFind, currentOffset+1) 
     : itemNameText.lastIndexOf(keyToFind, currentOffset-1);
 
-    if(newOffset != -1)
+    if(newOffset !== -1)
     {
         if(filteredKeys.length > 2 && !isNaN(filteredKeys[filteredKeys.length-3]))
         {
@@ -3477,14 +3308,14 @@ function handleFindMode(e)
                 ? itemNameText.indexOf(keyToFind, newOffset+1) 
                 : itemNameText.lastIndexOf(keyToFind, newOffset-1);
 
-                if(iterNewOffset != -1)
+                if(iterNewOffset !== -1)
                     newOffset = iterNewOffset;
             }
         }
 
         // offset if its a 't' or 'T'
         let targetOffset = newOffset; 
-        if(filteredKeys.length > 1 && filteredKeys[filteredKeys.length-2].toLowerCase() == "t")
+        if(filteredKeys.length > 1 && filteredKeys[filteredKeys.length-2].toLowerCase() === "t")
             targetOffset -= 1;
 
         moveCursorTo(
@@ -3498,7 +3329,7 @@ function handleFindMode(e)
 
 function handleReplaceMode(e)
 {
-    if(event.key != key_Esc)
+    if(event.key !== key_Esc)
     {
         const filteredKeys = keyBuffer.filter(function(value, index, arr)
         {
@@ -3601,7 +3432,7 @@ function SimulateEscapeVisualMode(e)
     if(WF.focusedItem())
     {
             const selection = WF.getSelection();
-            if (selection !== undefined && selection.length != 0)
+            if (selection !== undefined && selection.length !== 0)
             {
                 VisualSelectionBuffer = [];
                 WF.setSelection([]);
@@ -3624,7 +3455,7 @@ function HandleEscapeVisualMode(e)
     if(WF.focusedItem())
     {
             const selection = WF.getSelection();
-            if (selection !== undefined && selection.length != 0)
+            if (selection !== undefined && selection.length !== 0)
             {
                 VisualSelectionBuffer = [];
                 WF.setSelection([]);
@@ -3646,7 +3477,7 @@ function SimulateEscapeNormalMode(e)
     if(WF.focusedItem())
     {
             const selection = WF.getSelection();
-            if (selection !== undefined && selection.length != 0)
+            if (selection !== undefined && selection.length !== 0)
             {
                 VisualSelectionBuffer = [];
                 WF.setSelection([]);
@@ -3668,7 +3499,7 @@ function HandleEscapeNormalMode(e)
     if(WF.focusedItem())
     {
             const selection = WF.getSelection();
-            if (selection !== undefined && selection.length != 0)
+            if (selection !== undefined && selection.length !== 0)
             {
                 VisualSelectionBuffer = [];
                 WF.setSelection([]);
@@ -3694,7 +3525,7 @@ function goToListBottom(event, listRootItem)
         return;
 
     const visibleChildren = listRootItem.getVisibleChildren();
-    if (visibleChildren === undefined || visibleChildren.length == 0) 
+    if (visibleChildren === undefined || visibleChildren.length === 0) 
         return;
 
     const currentOffset = state.get().anchorOffset
@@ -3820,7 +3651,7 @@ function ZoomToMirroredItemsParent()
     if (!desiredParent)
         return;
 
-    if (desiredParent.isExpanded() == false)
+    if (desiredParent.isExpanded() === false)
         WF.expandItem(desiredParent);
 
     WF.zoomOut(desiredItem);
@@ -4075,7 +3906,7 @@ function HandleJumpTo()
 		// we don't support link editing within the note, 
         // while in insert mode, due to how the 
         // cursor movement works atm
-		if(cursorSelectionDelta == 0 && (IsFocusingOnNote() || !IsFocusingOnLink()))
+		if(cursorSelectionDelta === 0 && (IsFocusingOnNote() || !IsFocusingOnLink()))
 		{
 			focusPreJumpToItemMenu = WF.focusedItem();
 

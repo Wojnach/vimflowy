@@ -52,34 +52,6 @@ const {flashMode, goToInsertMode, goToNormalMode, goToVisualMode, goToReplaceMod
   window.WFEventListener = (event) => { if (event === 'documentReady') init(); };
 })();
 
-WFEventListener = event => 
-{
-  //console.log(event);
-  //console.log("-- WE GOT SOMETHING -- ")
-  if(event === "documentReady")
-  {
-    requestAnimationFrame(fixFocus);
-
-    const mainContainer = document.getElementById('app');
-
-    mainContainer.addEventListener('mousedown', event => 
-    { 
-      mouseClickIntoInsertMode(event);
-    });
-
-    mainContainer.addEventListener('keyup', event => 
-    { 
-      HandleKeyup(event);
-    });
-
-    mainContainer.addEventListener('keydown', event => 
-    { 
-      HandleKeydown(event);
-    })
-
-  }
-};
-
 function HandleKeyup(event)
 {
   HandleEasyMotion_KeyUp();

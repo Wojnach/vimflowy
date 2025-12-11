@@ -34,7 +34,7 @@ const actionMap =
 	      traverseLength += split[i].length;
 	      traverseLength += 1;
 
-	      if(split[i] == "")
+	      if(split[i] === "")
 	        continue;
 
 	      const wordEndOffset = traverseLength - 2;
@@ -92,7 +92,7 @@ const actionMap =
 	    for(let i = split.length-1; i >= 0; --i) 
 	    {
 	      traverseLength -= (split[i].length - 1);
-	      if(split[i] != "" && traverseLength < currentOffset)
+	      if(split[i] !== "" && traverseLength < currentOffset)
 	      {
 	        moveCursorTo(t, offsetCalculator(state), traverseLength);
 	        return;
@@ -389,7 +389,7 @@ const actionMap =
 	  'alt-√': t => 
 	  {
 	    const selection = WF.getSelection();
-	    if(selection !== undefined && selection.length != 0)
+	    if(selection !== undefined && selection.length !== 0)
 	      MoveSelectionDown(t);
 	    else
 	      MoveItemDown(t);
@@ -397,7 +397,7 @@ const actionMap =
 	  'alt-j': t => 
 	  {
 	    const selection = WF.getSelection();
-	    if(selection !== undefined && selection.length != 0)
+	    if(selection !== undefined && selection.length !== 0)
 	      MoveSelectionDown(t);
 	    else
 	      MoveItemDown(t);
@@ -405,7 +405,7 @@ const actionMap =
 	  'alt-ª': t => 
 	  {
 	    const selection = WF.getSelection();
-	    if(selection !== undefined && selection.length != 0)
+	    if(selection !== undefined && selection.length !== 0)
 	      MoveSelectionUp(t);
 	    else
 	      MoveItemUp(t);
@@ -413,7 +413,7 @@ const actionMap =
 	  'alt-k': t => 
 	  {
 	    const selection = WF.getSelection();
-	    if(selection !== undefined && selection.length != 0)
+	    if(selection !== undefined && selection.length !== 0)
 	      MoveSelectionUp(t);
 	    else
 	      MoveItemUp(t);
@@ -572,7 +572,7 @@ const actionMap =
 	  D: t => 
 	  {
 		var selection = WF.getSelection();
-		if (selection === undefined || selection.length == 0) 
+		if (selection === undefined || selection.length === 0)
 			return;
 
 		WF.editGroup(() => 

@@ -25,12 +25,12 @@ const transparentActionMap =
 	    focusPreJumpToItemMenu = WF.focusedItem();
 	    goToInsertMode();
 	  },
-	  'ctrl-Dead': e => 
+	  'ctrl-Dead': e =>
 	  {
 	    focusPreJumpToItemMenu = WF.focusedItem();
 	    goToInsertMode();
 	  },
-	  'ctrl-H': t => 
+		  'ctrl-H': t => 
 	  {
 		if(WF.focusedItem())
 		{
@@ -77,6 +77,13 @@ const transparentActionMap =
 	    }
 	    else
 	    {
+	      // Temp fix. Our event listeners are hooked up after WF so we can't stop the propagation atm.
+	      // we'll undo their command as a workaround for now
+	      WF.undo();
+
+	      e.preventDefault()
+	      e.stopPropagation()
+
 	      // WF.zoomIn(WF.currentItem());
 	      WF.zoomTo(WF.currentItem());
 	      WF.editItemName(WF.currentItem());
@@ -124,7 +131,7 @@ const transparentActionMap =
 	    if(bIsParentHomeRoot)
 	    {
 	      const visibleChildren = WF.currentItem().getVisibleChildren();
-	      if (visibleChildren !== undefined && visibleChildren.length != 0) 
+	      if (visibleChildren !== undefined && visibleChildren.length !== 0) 
 	      {
 	        WF.editItemName(visibleChildren[0]);
 	      }
@@ -165,7 +172,7 @@ const transparentActionMap =
 	    if(bIsCurrentItemHomeRoot)
 	    {
 	      const visibleChildren = WF.currentItem().getVisibleChildren();
-	      if (visibleChildren !== undefined && visibleChildren.length != 0) 
+	      if (visibleChildren !== undefined && visibleChildren.length !== 0) 
 	      {
 	        WF.editItemName(visibleChildren[0]);
 	      }
