@@ -167,6 +167,14 @@ const actionMap =
 	  '^': t => moveCursorToStart(t, offsetCalculator(state)),
 	  '$': t => moveCursorToEnd(t, offsetCalculator(state)),
 	  'E': t => moveCursorToEnd(t, offsetCalculator(state)),
+	  'H': t => {
+		// Focus on top-most visible bullet
+		focusTopVisibleItem();
+	  },
+	  'L': t => {
+		// Focus on bottom-most visible bullet
+		focusBottomVisibleItem();
+	  },
 	  'I': onlyIfProjectCanBeEdited(t => {
 	    moveCursorToStart(t, offsetCalculator(state))
 	    goToInsertMode()
@@ -263,10 +271,31 @@ const actionMap =
 	  {
 	    deleteUntilLineEnd();
 	  },
-	  'C': t => 
+	  'C': t =>
 	  {
-	    deleteUntilLineEnd();
-		goToInsertMode(true);
+		const focusedItem = WF.focusedItem();
+		if (!focusedItem) return;
+
+		const nameBeforeDelete = focusedItem.getNameInPlainText();
+
+		// If line is already empty, just go to insert mode directly
+		if (!nameBeforeDelete || nameBeforeDelete.length === 0) {
+			WF.editItemName(focusedItem);
+			goToInsertMode(false);
+			return;
+		}
+
+		deleteUntilLineEnd();
+
+		// After deleting, check if line is now empty to avoid cursor movement issues
+		const nameAfterDelete = focusedItem.getNameInPlainText();
+		if (nameAfterDelete && nameAfterDelete.length > 0) {
+			goToInsertMode(true);
+		} else {
+			// Line is now empty - ensure focus is maintained
+			WF.editItemName(focusedItem);
+			goToInsertMode(false);
+		}
 	  },
 	  'S': t => 
 	  {

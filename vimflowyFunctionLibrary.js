@@ -1156,6 +1156,9 @@ function enterVisualMode(t)
 function MoveItemDown(t)
 {
         const focusedItem = WF.focusedItem();
+        if (!focusedItem)
+            return;
+
         const nextItem = focusedItem.getNextVisibleSibling();
         if(nextItem === null)
             return;
@@ -1179,6 +1182,9 @@ function MoveItemDown(t)
 function MoveItemUp(t)
 {
         const focusedItem = WF.focusedItem();
+        if (!focusedItem)
+            return;
+
         const prevItem = focusedItem.getPreviousVisibleSibling();
         if(prevItem === null)
             return;
@@ -2571,6 +2577,90 @@ function fixFocus_2()
     // Nothing to focus yet: try again shortly (DOM may still be mounting)
     setTimeout(fixFocus, 50);
   }
+}
+
+// Helper function to focus an item and scroll it into view
+function focusItemAndScroll(item) {
+    if (!item) return;
+
+    WF.editItemName(item);
+
+    // Scroll the item into view if needed
+    const element = item.getElement();
+    if (element) {
+        const rect = element.getBoundingClientRect();
+        const floatingHeaderHeight = 50; // Account for Workflowy's header
+        const viewportHeight = window.innerHeight;
+
+        // Check if element is outside viewport
+        const aboveViewport = rect.top < floatingHeaderHeight;
+        const belowViewport = rect.bottom > viewportHeight;
+
+        if (aboveViewport || belowViewport) {
+            element.scrollIntoView({
+                behavior: 'auto',
+                block: 'center'
+            });
+        }
+    }
+}
+
+// Focus on the top-most visible bullet in the viewport
+function focusTopVisibleItem() {
+    const floatingHeaderHeight = 50; // Account for Workflowy's header
+    const viewportHeight = window.innerHeight;
+
+    // Get all visible project elements
+    const projects = document.querySelectorAll('.project');
+    let topMostItem = null;
+    let topMostTop = Infinity;
+
+    for (const project of projects) {
+        const rect = project.getBoundingClientRect();
+        // Check if the item is within the visible viewport
+        if (rect.top >= floatingHeaderHeight && rect.top < viewportHeight) {
+            if (rect.top < topMostTop) {
+                topMostTop = rect.top;
+                const projectId = project.getAttribute('projectid');
+                if (projectId) {
+                    topMostItem = WF.getItemById(projectId);
+                }
+            }
+        }
+    }
+
+    if (topMostItem) {
+        WF.editItemName(topMostItem);
+    }
+}
+
+// Focus on the bottom-most visible bullet in the viewport
+function focusBottomVisibleItem() {
+    const floatingHeaderHeight = 50; // Account for Workflowy's header
+    const viewportHeight = window.innerHeight;
+
+    // Get all visible project elements
+    const projects = document.querySelectorAll('.project');
+    let bottomMostItem = null;
+    let bottomMostBottom = -Infinity;
+
+    for (const project of projects) {
+        const rect = project.getBoundingClientRect();
+        // Check if the item is within the visible viewport
+        if (rect.bottom > floatingHeaderHeight && rect.bottom <= viewportHeight) {
+            if (rect.bottom > bottomMostBottom) {
+                bottomMostBottom = rect.bottom;
+                const projectId = project.getAttribute('projectid');
+                if (projectId) {
+                    bottomMostItem = WF.getItemById(projectId);
+                }
+            }
+        }
+    }
+
+    if (bottomMostItem) {
+        WF.editItemName(bottomMostItem);
+    }
 }
 
 function preventKeystrokesWhileNavigating(event)

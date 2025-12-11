@@ -28,13 +28,18 @@ function updateTimeTagCounter()
         applyToEachItem(addIfMatch, parent);
         return matches
     }
-    const itemHasTimeTag = item => WF.getItemNameTags(item).concat(WF.getItemNoteTags(item)).some(t => t.tag.match(/([@#])(\d+)([hm])$/i));
-    const getTimeTags = item => WF.getItemNameTags(item).concat(WF.getItemNoteTags(item)).filter(t => t.tag.match(/([@#])(\d+)([hm])$/i) !== null);
+    const itemHasTimeTag = item => WF.getItemNameTags(item).concat(WF.getItemNoteTags(item)).some(t => t.tag.match(/([@#])(\d+)([dhm])$/i));
+    const getTimeTags = item => WF.getItemNameTags(item).concat(WF.getItemNoteTags(item)).filter(t => t.tag.match(/([@#])(\d+)([dhm])$/i) !== null);
     const matchHasTimeTag = item => item.data.search_result && item.data.search_result.matches && itemHasTimeTag(item);
 
     function getMinutes(str) {
-        const m = str.match(/(\d+)([hm])/i);
-        return m[2] === "h" ? parseInt(m[1]) * 60 : parseInt(m[1])
+        const m = str.match(/(\d+)([dhm])/i);
+        if (!m) return 0;
+        const value = parseInt(m[1]);
+        const unit = m[2].toLowerCase();
+        if (unit === "d") return value * NumHoursInDay * 60; // days to minutes
+        if (unit === "h") return value * 60; // hours to minutes
+        return value; // minutes
     }
 
     function convertMinsToStr(mins) {

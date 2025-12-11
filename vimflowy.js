@@ -89,7 +89,7 @@ function HandleKeydown(event)
           // Restore focus to current item before returning to normal mode
           const currentItem = WF.currentItem();
           if (currentItem && !WF.focusedItem()) {
-            WF.editItemName(currentItem);
+            focusItemAndScroll(currentItem);
           }
           goToNormalMode();
         }, 50);
@@ -101,7 +101,7 @@ function HandleKeydown(event)
           // Restore focus to current item before returning to normal mode
           const currentItem = WF.currentItem();
           if (currentItem && !WF.focusedItem()) {
-            WF.editItemName(currentItem);
+            focusItemAndScroll(currentItem);
           }
           goToNormalMode();
         }, 100);

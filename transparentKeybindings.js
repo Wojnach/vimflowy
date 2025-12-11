@@ -41,7 +41,7 @@ const transparentActionMap =
 					setTimeout(() => {
 						const currentItem = WF.currentItem();
 						if (currentItem && !WF.focusedItem()) {
-							WF.editItemName(currentItem);
+							focusItemAndScroll(currentItem);
 						}
 						goToNormalMode();
 					}, 50);
@@ -225,14 +225,30 @@ const transparentActionMap =
 	  {
 		goToListBottom(e, WF.currentItem());
 	  },
-	  'gg': e => 
+	  'zz': e =>
+	  {
+		// Scroll page so focused item is in the center
+		const focusedItem = WF.focusedItem();
+		if (focusedItem) {
+			const element = focusedItem.getElement();
+			if (element) {
+				element.scrollIntoView({
+					behavior: 'auto',
+					block: 'center'
+				});
+			}
+		}
+		e.preventDefault();
+		e.stopPropagation();
+	  },
+	  'gg': e =>
 	  {
 	    const currentOffset = state.get().anchorOffset
-	    const bIsCurrentItemHomeRoot = WF.rootItem().equals(WF.currentItem()); 
+	    const bIsCurrentItemHomeRoot = WF.rootItem().equals(WF.currentItem());
 	    if(bIsCurrentItemHomeRoot)
 	    {
 	      const visibleChildren = WF.currentItem().getVisibleChildren();
-	      if (visibleChildren !== undefined && visibleChildren.length !== 0) 
+	      if (visibleChildren !== undefined && visibleChildren.length !== 0)
 	      {
 	        WF.editItemName(visibleChildren[0]);
 	      }
@@ -430,13 +446,19 @@ const transparentActionMap =
 			// });
 		}
 	  },
-	  'ctrl-Enter': e => 
+	  'ctrl-Enter': e =>
 	  {
 		  RotateSelectionPreMoveBuffer();
 		  toggleCompletedOnSelection(e);
 		  RotateSelectionPreMoveBuffer();
 	  },
-	  'ctrl-c': e => 
+	  'meta-Enter': e =>
+	  {
+		  RotateSelectionPreMoveBuffer();
+		  toggleCompletedOnSelection(e);
+		  RotateSelectionPreMoveBuffer();
+	  },
+	  'ctrl-c': e =>
 	  {
 		if(WF.focusedItem())
 		{
@@ -445,6 +467,11 @@ const transparentActionMap =
 			e.preventDefault()
 			e.stopPropagation()
 		}
+	  },
+	  'ctrl-v': e =>
+	  {
+		// Let the browser handle ctrl-v for system clipboard paste
+		// Don't prevent default - allow native paste behavior
 	  },
 	  'dm': e => 
 	  {
@@ -509,7 +536,13 @@ const transparentActionMap =
 		RotateSelectionPreMoveBuffer();
 		goToNormalMode();
 	  },
-	  'ctrl-Enter': e => 
+	  'ctrl-Enter': e =>
+	  {
+		  toggleCompletedOnSelection(e);
+		  RotateSelectionPreMoveBuffer();
+		  ExitVisualMode();
+	  },
+	  'meta-Enter': e =>
 	  {
 		  toggleCompletedOnSelection(e);
 		  RotateSelectionPreMoveBuffer();
